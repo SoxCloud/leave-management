@@ -8,7 +8,7 @@ import LoadingSkeleton from '../common/LoadingSkeleton';
 import { formatDate } from '../../services/utils';
 import { AttendanceStatus, AbsenteeismRecord } from '../../types';
 
-type RowStatus = 'Present' | 'Absent' | 'Off';
+type RowStatus = 'Present' | 'Absent' | 'Leave' | 'Off';
 
 interface AttendanceRow {
   status: RowStatus;
@@ -38,10 +38,11 @@ const AttendanceTracker: React.FC = () => {
     for (const learner of learners) {
       const existing = todayRecords.find(r => r.learnerName === learner.fullName);
       if (existing) {
-        map.set(learner.fullName, {
-          status: existing.attendanceStatus === AttendanceStatus.PRESENT ? 'Present' : 'Absent',
-          authorised: existing.authorised,
-        });
+        const status: RowStatus =
+          existing.attendanceStatus === AttendanceStatus.PRESENT ? 'Present' :
+          existing.attendanceStatus === AttendanceStatus.AUTHORISED_ABSENCE ? 'Leave' :
+          'Absent';
+        map.set(learner.fullName, { status, authorised: existing.authorised });
       } else if (todayIsSunday) {
         map.set(learner.fullName, { status: 'Off', authorised: false });
       } else {
@@ -66,10 +67,14 @@ const AttendanceTracker: React.FC = () => {
     for (const [learnerName, row] of rows) {
       if (row.status === 'Off') continue;
       const learner = learners.find(l => l.fullName === learnerName);
+      const attendanceStatus =
+        row.status === 'Absent' ? AttendanceStatus.ABSENT :
+        row.status === 'Leave' ? AttendanceStatus.AUTHORISED_ABSENCE :
+        AttendanceStatus.PRESENT;
       toSave.push({
         learnerName,
         date: today,
-        attendanceStatus: row.status === 'Absent' ? AttendanceStatus.ABSENT : AttendanceStatus.PRESENT,
+        attendanceStatus,
         authorised: row.authorised,
         reason: '',
         capturedBy: user.name,
@@ -194,13 +199,14 @@ const AttendanceTracker: React.FC = () => {
                             const current = rows.get(learner.fullName);
                             setRow(learner.fullName, {
                               status,
-                              authorised: status === 'Absent' ? (current?.authorised ?? false) : false,
+                              authorised: status === 'Absent' || status === 'Leave' ? (current?.authorised ?? false) : false,
                             });
                           }}
                           className="px-3 py-1.5 bg-slate-800/50 border border-slate-700/50 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500/50"
                         >
                           <option value="Present">Present</option>
                           <option value="Absent">Absent</option>
+                          <option value="Leave">Leave</option>
                           <option value="Off">Off</option>
                         </select>
                         {existing && (
@@ -209,7 +215,7 @@ const AttendanceTracker: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      {row.status === 'Absent' ? (
+                      {row.status === 'Absent' || row.status === 'Leave' ? (
                         <button
                           onClick={() => setRow(learner.fullName, { ...row, authorised: !row.authorised })}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${

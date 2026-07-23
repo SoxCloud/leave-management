@@ -11,6 +11,7 @@ export enum LeaveType {
   SICK = 'Sick',
   FAMILY_RESPONSIBILITY = 'Family Responsibility',
   UNPAID = 'Unpaid',
+  LEAVE = 'Leave',
   OTHER = 'Other',
 }
 

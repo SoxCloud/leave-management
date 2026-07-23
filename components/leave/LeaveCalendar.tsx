@@ -10,6 +10,8 @@ const TYPE_COLORS: Record<string, string> = {
   [LeaveType.ANNUAL]: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
   [LeaveType.SICK]: 'bg-red-500/20 text-red-300 border-red-500/30',
   [LeaveType.FAMILY_RESPONSIBILITY]: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+  [LeaveType.UNPAID]: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
+  [LeaveType.LEAVE]: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
   [LeaveType.OTHER]: 'bg-slate-500/20 text-slate-300 border-slate-500/30',
 };
 
