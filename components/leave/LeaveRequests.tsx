@@ -43,24 +43,36 @@ const LeaveRequests: React.FC = () => {
     });
   };
 
+  const statusOrder: Record<string, number> = {
+    [LeaveStatus.PENDING]: 0,
+    [LeaveStatus.APPROVED]: 1,
+  };
+
   const filteredRequests = useMemo(() => {
-    return leaveRequests.filter(lr => {
-      const learner = learners.find(l => l.fullName === lr.learnerName);
-      const name = learner?.fullName || '';
-      const q = filters.search.toLowerCase();
-      if (q && !name.toLowerCase().includes(q) && !lr.leaveType.toLowerCase().includes(q)) return false;
-      if (filters.leaveType && lr.leaveType !== filters.leaveType) return false;
-      if (filters.status && lr.status !== filters.status) return false;
-      if (filters.month) {
-        const m = new Date(lr.startDate).getMonth();
-        if (m !== parseInt(filters.month)) return false;
-      }
-      if (filters.year) {
-        const y = new Date(lr.startDate).getFullYear();
-        if (y !== parseInt(filters.year)) return false;
-      }
-      return true;
-    });
+    return leaveRequests
+      .filter(lr => {
+        const learner = learners.find(l => l.fullName === lr.learnerName);
+        const name = learner?.fullName || '';
+        const q = filters.search.toLowerCase();
+        if (q && !name.toLowerCase().includes(q) && !lr.leaveType.toLowerCase().includes(q)) return false;
+        if (filters.leaveType && lr.leaveType !== filters.leaveType) return false;
+        if (filters.status && lr.status !== filters.status) return false;
+        if (filters.month) {
+          const m = new Date(lr.startDate).getMonth();
+          if (m !== parseInt(filters.month)) return false;
+        }
+        if (filters.year) {
+          const y = new Date(lr.startDate).getFullYear();
+          if (y !== parseInt(filters.year)) return false;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        const aOrder = statusOrder[a.status] ?? 2;
+        const bOrder = statusOrder[b.status] ?? 2;
+        if (aOrder !== bOrder) return aOrder - bOrder;
+        return new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+      });
   }, [leaveRequests, learners, filters]);
 
   const handleSubmitNew = async () => {
