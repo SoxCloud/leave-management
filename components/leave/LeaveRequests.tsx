@@ -14,7 +14,7 @@ import { clsx, formatDate } from '../../services/utils';
 import {
   LeaveRequest, LeaveStatus, LeaveType, Learner
 } from '../../types';
-import { getDaysBetween, hasOverlappingLeave } from '../../services/leaveCalculations';
+import { getDaysExcludingSundays, hasOverlappingLeave } from '../../services/leaveCalculations';
 
 const newRequestDefaults = () => ({
   learnerName: '', leaveType: LeaveType.ANNUAL,
@@ -35,7 +35,7 @@ const LeaveRequests: React.FC = () => {
     setFormData(prev => {
       const next = { ...prev, [field]: value };
       if ((field === 'startDate' || field === 'endDate') && next.startDate && next.endDate) {
-        const days = getDaysBetween(next.startDate, next.endDate, false);
+        const days = getDaysExcludingSundays(next.startDate, next.endDate);
         next.daysRequested = Math.max(0.5, days);
       }
       return next;

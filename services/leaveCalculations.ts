@@ -38,6 +38,18 @@ export function getDaysBetween(startDate: string, endDate: string, excludeWeeken
   return count;
 }
 
+export function getDaysExcludingSundays(startDate: string, endDate: string): number {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  let count = 0;
+  const current = new Date(start);
+  while (current <= end) {
+    if (current.getDay() !== 0) count++;
+    current.setDate(current.getDate() + 1);
+  }
+  return count;
+}
+
 export function hasOverlappingLeave(
   existingRequests: { startDate: string; endDate: string; status: string }[],
   newStart: string,
