@@ -30,6 +30,7 @@ const LeaveRequests: React.FC = () => {
   const [formData, setFormData] = useState(newRequestDefaults());
   const [saving, setSaving] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [recalcLoading, setRecalcLoading] = useState(false);
 
   const handleNewChange = (field: string, value: string | number | boolean) => {
     setFormData(prev => {
@@ -141,6 +142,29 @@ const LeaveRequests: React.FC = () => {
     }
   };
 
+  const handleRecalculateDays = async (lr: LeaveRequest) => {
+    const correctDays = getDaysExcludingSundays(lr.startDate, lr.endDate);
+    if (correctDays === lr.daysRequested) {
+      showToast('info', 'Days are already correct');
+      return;
+    }
+    setRecalcLoading(true);
+    try {
+      const ok = await LeaveRequestsService.updateDays(lr.id, correctDays);
+      if (ok) {
+        showToast('success', `Days updated from ${lr.daysRequested} to ${correctDays}`);
+        setSelectedRequest(null);
+        await refresh();
+      } else {
+        showToast('error', 'Failed to update days');
+      }
+    } catch {
+      showToast('error', 'An error occurred');
+    } finally {
+      setRecalcLoading(false);
+    }
+  };
+
   if (loading) return <LoadingSkeleton type="table" count={8} />;
 
   return (
@@ -246,6 +270,7 @@ const LeaveRequests: React.FC = () => {
                 ['Start Date', formatDate(selectedRequest.startDate)],
                 ['End Date', formatDate(selectedRequest.endDate)],
                 ['Days Requested', `${selectedRequest.daysRequested}`],
+                ['Correct Days (excl. Sun)', `${getDaysExcludingSundays(selectedRequest.startDate, selectedRequest.endDate)}`],
                 ['Medical Certificate', selectedRequest.medicalCertificate ? 'Yes' : 'No'],
                 ['Approved By', selectedRequest.approvedBy || '-'],
                 ['Approval Date', selectedRequest.approvalDate ? formatDate(selectedRequest.approvalDate) : '-'],
@@ -266,6 +291,15 @@ const LeaveRequests: React.FC = () => {
                 <p className="text-sm text-white">{selectedRequest.comments}</p>
               </div>
             )}
+            <div className="flex justify-end pt-2">
+              <button
+                onClick={() => handleRecalculateDays(selectedRequest)}
+                disabled={recalcLoading}
+                className="flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white rounded-xl text-sm font-medium transition-colors"
+              >
+                {recalcLoading ? 'Recalculating...' : 'Recalculate Days'}
+              </button>
+            </div>
           </div>
         )}
       </Modal>

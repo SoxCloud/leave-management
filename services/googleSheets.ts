@@ -190,6 +190,11 @@ export const LeaveRequestsService = {
     const result = await postAction('rejectLeave', { id, comments: comments || '' });
     return result.success === true;
   },
+
+  async updateDays(id: string, days: number): Promise<boolean> {
+    const result = await postAction('updateRow', { sheet: 'LeaveRequests', idColumn: 0, id, column: 5, value: String(days) });
+    return result.success === true;
+  },
 };
 
 export const LeaveBalancesService = {
