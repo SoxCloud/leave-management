@@ -247,6 +247,17 @@ export const AbsenteeismService = {
     const result = await postAction('captureAttendance', newRecord as unknown as Record<string, unknown>);
     return result.success ? newRecord : null;
   },
+
+  async bulkCreate(records: Omit<AbsenteeismRecord, 'id'>[]): Promise<{ success: number; failed: number }> {
+    let success = 0;
+    let failed = 0;
+    for (const record of records) {
+      const result = await this.create(record);
+      if (result) success++;
+      else failed++;
+    }
+    return { success, failed };
+  },
 };
 
 export const UsersService = {

@@ -272,7 +272,13 @@ function captureAttendance_(data) {
   const existingData = sheet.getDataRange().getValues();
   for (let i = 1; i < existingData.length; i++) {
     if (String(existingData[i][0]) === data.date && String(existingData[i][1]).toLowerCase() === (data.learnerName || '').toLowerCase()) {
-      return { success: false, error: 'Duplicate attendance record for this date' };
+      sheet.getRange(i + 1, 3).setValue(data.attendanceStatus || 'Present');
+      sheet.getRange(i + 1, 4).setValue(data.authorised ? 'Yes' : 'No');
+      sheet.getRange(i + 1, 5).setValue(data.reason || '');
+      sheet.getRange(i + 1, 6).setValue(data.capturedBy || '');
+      sheet.getRange(i + 1, 9).setValue(data.comments || '');
+      logAudit_({ user: data.capturedBy || 'System', action: 'Updated attendance', oldValue: '', newValue: JSON.stringify(data) });
+      return { success: true, message: 'Attendance updated' };
     }
   }
 
