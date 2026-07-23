@@ -47,7 +47,7 @@ const LearnerProfile: React.FC<LearnerProfileProps> = ({ learnerName, onBack }) 
   const pendingLeaves = learnerLeaves.filter(lr => lr.status === LeaveStatus.PENDING).length;
 
   const approvedLeaves = learnerLeaves.filter(lr => lr.status === LeaveStatus.APPROVED);
-  const totalDaysTaken = approvedLeaves.reduce((sum, lr) => sum + lr.daysRequested, 0);
+  const totalDaysTaken = annualTaken;
   const unpaidTaken = approvedLeaves.filter(lr => lr.leaveType === LeaveType.UNPAID).reduce((sum, lr) => sum + lr.daysRequested, 0);
   const sickTaken = approvedLeaves.filter(lr => lr.leaveType === LeaveType.SICK).reduce((sum, lr) => sum + lr.daysRequested, 0);
   const familyTaken = approvedLeaves.filter(lr => lr.leaveType === LeaveType.FAMILY_RESPONSIBILITY).reduce((sum, lr) => sum + lr.daysRequested, 0);
