@@ -180,10 +180,26 @@ export const LeaveRequestsService = {
     return all.filter(lr => lr.learnerName.toLowerCase() === name.toLowerCase());
   },
 
-  async create(request: Omit<LeaveRequest, 'id'>): Promise<LeaveRequest | null> {
+  async create(request: Omit<LeaveRequest, 'id'>): Promise<LeaveRequest> {
     const newRequest: LeaveRequest = { ...request, id: generateId() };
-    const result = await postAction('addLeaveRequest', newRequest as unknown as Record<string, unknown>);
-    return result.success ? newRequest : null;
+    const row = [
+      newRequest.id,
+      newRequest.learnerName,
+      newRequest.leaveType,
+      newRequest.startDate,
+      newRequest.endDate,
+      newRequest.daysRequested,
+      newRequest.reason,
+      newRequest.medicalCertificate ? 'Yes' : 'No',
+      newRequest.documentLink,
+      '', // approvedBy
+      '', // approvalDate
+      'Pending',
+      newRequest.comments,
+    ];
+    const result = await postAction('addRow', { sheet: 'LeaveRequests', row });
+    if (!result.success) throw new Error((result.error as string) || 'Failed to submit leave request');
+    return newRequest;
   },
 
   async approve(id: string, approvedBy: string): Promise<boolean> {

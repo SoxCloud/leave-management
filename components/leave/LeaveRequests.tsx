@@ -14,7 +14,7 @@ import { clsx, formatDate } from '../../services/utils';
 import {
   LeaveRequest, LeaveStatus, LeaveType, Learner
 } from '../../types';
-import { getWorkingDays, hasOverlappingLeave } from '../../services/leaveCalculations';
+import { getWorkingDays } from '../../services/leaveCalculations';
 
 const newRequestDefaults = () => ({
   learnerName: '', leaveType: LeaveType.ANNUAL,
@@ -72,13 +72,6 @@ const LeaveRequests: React.FC = () => {
       showToast('error', 'Please select start and end dates');
       return;
     }
-    if (formData.leaveType !== LeaveType.UNPAID) {
-      const learnerLeaves = leaveRequests.filter(lr => lr.learnerName === formData.learnerName);
-      if (hasOverlappingLeave(learnerLeaves, formData.startDate, formData.endDate)) {
-        showToast('error', `${formData.learnerName} already has an overlapping leave request`);
-        return;
-      }
-    }
     setSaving(true);
     try {
       const request: Omit<LeaveRequest, 'id'> = {
@@ -95,17 +88,13 @@ const LeaveRequests: React.FC = () => {
         status: LeaveStatus.PENDING,
         comments: '',
       };
-      const result = await LeaveRequestsService.create(request);
-      if (result) {
-        showToast('success', 'Leave request submitted successfully');
-        setShowNewModal(false);
-        setFormData(newRequestDefaults());
-        await refresh();
-      } else {
-        showToast('error', 'Failed to submit leave request');
-      }
-    } catch {
-      showToast('error', 'An error occurred while saving');
+      await LeaveRequestsService.create(request);
+      showToast('success', 'Leave request submitted successfully');
+      setShowNewModal(false);
+      setFormData(newRequestDefaults());
+      await refresh();
+    } catch (err) {
+      showToast('error', err instanceof Error ? err.message : 'Failed to submit leave request');
     } finally {
       setSaving(false);
     }
