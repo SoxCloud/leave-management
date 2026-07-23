@@ -162,6 +162,11 @@ export const LearnersService = {
     const result = await postAction('addLearner', learner as unknown as Record<string, unknown>);
     return result.success ? learner : null;
   },
+
+  async updateStatus(fullName: string, status: string): Promise<boolean> {
+    const result = await postAction('updateRow', { sheet: 'Learners', idColumn: 0, id: fullName, column: 8, value: status });
+    return result.success === true;
+  },
 };
 
 export const LeaveRequestsService = {

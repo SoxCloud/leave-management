@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Search, Plus, Filter, ChevronDown, MoreHorizontal, Eye, Edit, Trash2 } from 'lucide-react';
+import { Search, Plus, Eye, Loader } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useToast } from '../../context/ToastContext';
 import { LearnersService } from '../../services/googleSheets';
@@ -23,6 +23,24 @@ const LearnerList: React.FC = () => {
   const [selectedLearner, setSelectedLearner] = useState<Learner | null>(null);
   const [formData, setFormData] = useState({ ...emptyForm });
   const [saving, setSaving] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState<string | null>(null);
+
+  const handleStatusChange = async (learnerName: string, newStatus: string) => {
+    setUpdatingStatus(learnerName);
+    try {
+      const ok = await LearnersService.updateStatus(learnerName, newStatus);
+      if (ok) {
+        showToast('success', `${learnerName} status changed to ${newStatus}`);
+        await refresh();
+      } else {
+        showToast('error', 'Failed to update status');
+      }
+    } catch {
+      showToast('error', 'An error occurred');
+    } finally {
+      setUpdatingStatus(null);
+    }
+  };
 
   const handleChange = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
@@ -174,7 +192,28 @@ const LearnerList: React.FC = () => {
                   <td className="px-4 py-3 text-sm text-slate-300">{learner.supervisor}</td>
                   <td className="px-4 py-3 text-sm text-slate-300">{learner.manager}</td>
                   <td className="px-4 py-3 text-sm text-slate-400">{formatDate(learner.startDate)}</td>
-                  <td className="px-4 py-3"><Badge label={learner.status} size="sm" /></td>
+                  <td className="px-4 py-3">
+                    <div className="flex items-center gap-2">
+                      <select
+                        value={learner.status}
+                        onChange={e => handleStatusChange(learner.fullName, e.target.value)}
+                        disabled={updatingStatus === learner.fullName}
+                        className={`px-2 py-1 rounded-lg text-xs font-medium border transition-colors appearance-none cursor-pointer ${
+                          learner.status === 'Active' ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' :
+                          learner.status === 'Graduated' ? 'bg-blue-500/10 text-blue-400 border-blue-500/20' :
+                          learner.status === 'Inactive' ? 'bg-slate-500/10 text-slate-400 border-slate-500/20' :
+                          learner.status === 'Terminated' ? 'bg-red-500/10 text-red-400 border-red-500/20' :
+                          'bg-slate-500/10 text-slate-400 border-slate-500/20'
+                        }`}
+                      >
+                        <option value="Active">Active</option>
+                        <option value="Inactive">Inactive</option>
+                        <option value="Graduated">Graduated</option>
+                        <option value="Terminated">Terminated</option>
+                      </select>
+                      {updatingStatus === learner.fullName && <Loader size={14} className="text-slate-400 animate-spin" />}
+                    </div>
+                  </td>
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={() => setSelectedLearner(learner)}
