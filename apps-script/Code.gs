@@ -197,13 +197,15 @@ function addLeaveRequest_(data) {
   const newStart = new Date(data.startDate).getTime();
   const newEnd = new Date(data.endDate).getTime();
 
-  for (let i = 1; i < existingData.length; i++) {
-    const row = existingData[i];
-    if (String(row[1]).toLowerCase() === (data.learnerName || '').toLowerCase() && String(row[11]) === 'Approved') {
-      const existingStart = new Date(String(row[3])).getTime();
-      const existingEnd = new Date(String(row[4])).getTime();
-      if (newStart <= existingEnd && newEnd >= existingStart) {
-        return { success: false, error: 'Overlapping leave detected' };
+  if (data.leaveType !== 'Unpaid') {
+    for (let i = 1; i < existingData.length; i++) {
+      const row = existingData[i];
+      if (String(row[1]).toLowerCase() === (data.learnerName || '').toLowerCase() && String(row[11]) === 'Approved' && String(row[2]) !== 'Unpaid') {
+        const existingStart = new Date(String(row[3])).getTime();
+        const existingEnd = new Date(String(row[4])).getTime();
+        if (newStart <= existingEnd && newEnd >= existingStart) {
+          return { success: false, error: 'Overlapping leave detected' };
+        }
       }
     }
   }

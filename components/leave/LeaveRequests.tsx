@@ -72,10 +72,12 @@ const LeaveRequests: React.FC = () => {
       showToast('error', 'Please select start and end dates');
       return;
     }
-    const learnerLeaves = leaveRequests.filter(lr => lr.learnerName === formData.learnerName);
-    if (hasOverlappingLeave(learnerLeaves, formData.startDate, formData.endDate)) {
-      showToast('error', `${formData.learnerName} already has an overlapping leave request`);
-      return;
+    if (formData.leaveType !== LeaveType.UNPAID) {
+      const learnerLeaves = leaveRequests.filter(lr => lr.learnerName === formData.learnerName);
+      if (hasOverlappingLeave(learnerLeaves, formData.startDate, formData.endDate)) {
+        showToast('error', `${formData.learnerName} already has an overlapping leave request`);
+        return;
+      }
     }
     setSaving(true);
     try {
