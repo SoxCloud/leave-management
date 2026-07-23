@@ -15,7 +15,7 @@ export function calculateAccruedDays(startDate: string, endDate?: string): numbe
 
 export function calculateLeaveBalance(startDate: string, leaveTaken: number, endDate?: string): number {
   const accrued = calculateAccruedDays(startDate, endDate);
-  return Math.max(0, Math.round((accrued - leaveTaken) * 10) / 10);
+  return Math.round((accrued - leaveTaken) * 10) / 10;
 }
 
 export function calculateAnnualLeaveTaken(leaveRequests: { leaveType: string; status: string; daysRequested: number }[]): number {

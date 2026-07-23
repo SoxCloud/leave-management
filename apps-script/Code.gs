@@ -332,7 +332,7 @@ function recalculateBalances_(learnerName) {
     }
   }
 
-  const balance = Math.max(0, Math.round((accrued - annualTaken) * 10) / 10);
+  const balance = Math.round((accrued - annualTaken) * 10) / 10;
   const now = new Date().toISOString();
 
   const balanceData = balancesSheet.getDataRange().getValues();
