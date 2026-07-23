@@ -14,7 +14,7 @@ import { clsx, formatDate } from '../../services/utils';
 import {
   LeaveRequest, LeaveStatus, LeaveType, Learner
 } from '../../types';
-import { getDaysExcludingSundays, hasOverlappingLeave } from '../../services/leaveCalculations';
+import { getWorkingDays, hasOverlappingLeave } from '../../services/leaveCalculations';
 
 const newRequestDefaults = () => ({
   learnerName: '', leaveType: LeaveType.ANNUAL,
@@ -36,7 +36,7 @@ const LeaveRequests: React.FC = () => {
     setFormData(prev => {
       const next = { ...prev, [field]: value };
       if ((field === 'startDate' || field === 'endDate') && next.startDate && next.endDate) {
-        const days = getDaysExcludingSundays(next.startDate, next.endDate);
+        const days = getWorkingDays(next.startDate, next.endDate);
         next.daysRequested = Math.max(0.5, days);
       }
       return next;
@@ -144,7 +144,7 @@ const LeaveRequests: React.FC = () => {
   };
 
   const handleRecalculateDays = async (lr: LeaveRequest) => {
-    const correctDays = getDaysExcludingSundays(lr.startDate, lr.endDate);
+    const correctDays = getWorkingDays(lr.startDate, lr.endDate);
     if (correctDays === lr.daysRequested) {
       showToast('info', 'Days are already correct');
       return;
@@ -271,7 +271,7 @@ const LeaveRequests: React.FC = () => {
                 ['Start Date', formatDate(selectedRequest.startDate)],
                 ['End Date', formatDate(selectedRequest.endDate)],
                 ['Days Requested', `${selectedRequest.daysRequested}`],
-                ['Correct Days (excl. Sun)', `${getDaysExcludingSundays(selectedRequest.startDate, selectedRequest.endDate)}`],
+                ['Correct Days', `${getWorkingDays(selectedRequest.startDate, selectedRequest.endDate)}`],
                 ['Medical Certificate', selectedRequest.medicalCertificate ? 'Yes' : 'No'],
                 ['Approved By', selectedRequest.approvedBy || '-'],
                 ['Approval Date', selectedRequest.approvalDate ? formatDate(selectedRequest.approvalDate) : '-'],

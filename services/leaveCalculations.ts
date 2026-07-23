@@ -38,13 +38,62 @@ export function getDaysBetween(startDate: string, endDate: string, excludeWeeken
   return count;
 }
 
-export function getDaysExcludingSundays(startDate: string, endDate: string): number {
+export function getSouthAfricanHolidays(year: number): Date[] {
+  const holidays: Date[] = [
+    new Date(year, 0, 1),    // New Year's Day
+    new Date(year, 2, 21),   // Human Rights Day
+    new Date(year, 3, 27),   // Freedom Day
+    new Date(year, 4, 1),    // Workers' Day
+    new Date(year, 5, 16),   // Youth Day
+    new Date(year, 7, 9),    // National Women's Day
+    new Date(year, 8, 24),   // Heritage Day
+    new Date(year, 11, 16),  // Day of Reconciliation
+    new Date(year, 11, 25),  // Christmas Day
+    new Date(year, 11, 26),  // Day of Goodwill
+  ];
+
+  const easter = getEasterDate(year);
+  holidays.push(new Date(easter.getFullYear(), easter.getMonth(), easter.getDate() - 2)); // Good Friday
+  holidays.push(new Date(easter.getFullYear(), easter.getMonth(), easter.getDate() + 1)); // Family Day (Easter Monday)
+
+  return holidays;
+}
+
+export function isPublicHoliday(date: Date): boolean {
+  const year = date.getFullYear();
+  const holidays = getSouthAfricanHolidays(year);
+  return holidays.some(h =>
+    h.getFullYear() === date.getFullYear() &&
+    h.getMonth() === date.getMonth() &&
+    h.getDate() === date.getDate()
+  );
+}
+
+function getEasterDate(year: number): Date {
+  const a = year % 19;
+  const b = Math.floor(year / 100);
+  const c = year % 100;
+  const d = Math.floor(b / 4);
+  const e = b % 4;
+  const f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4);
+  const k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31);
+  const day = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(year, month - 1, day);
+}
+
+export function getWorkingDays(startDate: string, endDate: string): number {
   const start = new Date(startDate);
   const end = new Date(endDate);
   let count = 0;
   const current = new Date(start);
   while (current <= end) {
-    if (current.getDay() !== 0) count++;
+    if (current.getDay() !== 0 && !isPublicHoliday(current)) count++;
     current.setDate(current.getDate() + 1);
   }
   return count;
