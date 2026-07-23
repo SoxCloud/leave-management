@@ -455,10 +455,11 @@ function getChartData_() {
     const days = parseFloat(String(row[5])) || 0;
     const type = String(row[2]);
 
-    if (!months[key]) months[key] = { month: label, annual: 0, sick: 0, familyResponsibility: 0, total: 0 };
+    if (!months[key]) months[key] = { month: label, annual: 0, sick: 0, familyResponsibility: 0, unpaid: 0, total: 0 };
     if (type === 'Annual') months[key].annual += days;
     else if (type === 'Sick') months[key].sick += days;
     else if (type === 'Family Responsibility') months[key].familyResponsibility += days;
+    else if (type === 'Unpaid') months[key].unpaid += days;
     months[key].total += days;
   });
 

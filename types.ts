@@ -10,6 +10,7 @@ export enum LeaveType {
   ANNUAL = 'Annual',
   SICK = 'Sick',
   FAMILY_RESPONSIBILITY = 'Family Responsibility',
+  UNPAID = 'Unpaid',
   OTHER = 'Other',
 }
 
@@ -132,6 +133,7 @@ export interface ChartData {
   annual: number;
   sick: number;
   familyResponsibility: number;
+  unpaid: number;
   total: number;
 }
 

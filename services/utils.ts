@@ -67,6 +67,7 @@ export function getStatusColor(status: string): string {
     Annual: 'blue',
     Sick: 'red',
     'Family Responsibility': 'purple',
+    Unpaid: 'cyan',
     Other: 'slate',
     Active: 'emerald',
     Inactive: 'slate',

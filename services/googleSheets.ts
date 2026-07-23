@@ -339,10 +339,11 @@ export async function fetchChartData(): Promise<ChartData[]> {
     const date = new Date(lr.startDate);
     const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
     const label = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
-    if (!months[key]) months[key] = { month: label, annual: 0, sick: 0, familyResponsibility: 0, total: 0 };
+    if (!months[key]) months[key] = { month: label, annual: 0, sick: 0, familyResponsibility: 0, unpaid: 0, total: 0 };
     if (lr.leaveType === LeaveType.ANNUAL) months[key].annual += lr.daysRequested;
     else if (lr.leaveType === LeaveType.SICK) months[key].sick += lr.daysRequested;
     else if (lr.leaveType === LeaveType.FAMILY_RESPONSIBILITY) months[key].familyResponsibility += lr.daysRequested;
+    else if (lr.leaveType === LeaveType.UNPAID) months[key].unpaid += lr.daysRequested;
     months[key].total += lr.daysRequested;
   });
   return Object.entries(months).sort(([a], [b]) => a.localeCompare(b)).map(([, v]) => v);

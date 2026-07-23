@@ -40,11 +40,13 @@ const ExecutiveDashboard: React.FC = () => {
       annual: acc.annual + curr.annual,
       sick: acc.sick + curr.sick,
       familyResponsibility: acc.familyResponsibility + curr.familyResponsibility,
-    }), { annual: 0, sick: 0, familyResponsibility: 0 });
+      unpaid: acc.unpaid + (curr.unpaid || 0),
+    }), { annual: 0, sick: 0, familyResponsibility: 0, unpaid: 0 });
     return [
       { name: 'Annual', value: totals.annual },
       { name: 'Sick', value: totals.sick },
       { name: 'Family Resp.', value: totals.familyResponsibility },
+      { name: 'Unpaid', value: totals.unpaid },
     ];
   }, [chartData]);
 
@@ -101,6 +103,7 @@ const ExecutiveDashboard: React.FC = () => {
               <Line type="monotone" dataKey="annual" stroke="#6366f1" strokeWidth={2} dot={{ r: 3 }} name="Annual" />
               <Line type="monotone" dataKey="sick" stroke="#f59e0b" strokeWidth={2} dot={{ r: 3 }} name="Sick" />
               <Line type="monotone" dataKey="familyResponsibility" stroke="#8b5cf6" strokeWidth={2} dot={{ r: 3 }} name="Family Resp." />
+              <Line type="monotone" dataKey="unpaid" stroke="#14b8a6" strokeWidth={2} dot={{ r: 3 }} name="Unpaid" />
             </LineChart>
           </ResponsiveContainer>
         </div>
