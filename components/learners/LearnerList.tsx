@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { Search, Plus, Eye, Loader } from 'lucide-react';
+import { Search, Plus, BarChart3, Loader } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useToast } from '../../context/ToastContext';
 import { LearnersService } from '../../services/googleSheets';
@@ -7,6 +7,7 @@ import Modal from '../common/Modal';
 import Badge from '../common/Badge';
 import EmptyState from '../common/EmptyState';
 import LoadingSkeleton from '../common/LoadingSkeleton';
+import LearnerProfile from './LearnerProfile';
 import { clsx, formatDate } from '../../services/utils';
 import { Learner } from '../../types';
 
@@ -217,9 +218,10 @@ const LearnerList: React.FC = () => {
                   <td className="px-4 py-3 text-right">
                     <button
                       onClick={() => setSelectedLearner(learner)}
-                      className="p-1.5 rounded-lg hover:bg-slate-700 text-slate-400 hover:text-white transition-colors"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-500/10 text-indigo-400 hover:bg-indigo-500/20 text-xs font-medium transition-colors"
                     >
-                      <Eye size={16} />
+                      <BarChart3 size={14} />
+                      Dashboard
                     </button>
                   </td>
                 </tr>
@@ -229,39 +231,13 @@ const LearnerList: React.FC = () => {
         </div>
       )}
 
-      {/* Learner Detail Modal */}
-      <Modal isOpen={!!selectedLearner} onClose={() => setSelectedLearner(null)} title="Learner Details" size="lg">
+      {/* Learner Dashboard Modal */}
+      <Modal isOpen={!!selectedLearner} onClose={() => setSelectedLearner(null)} title="Learner Dashboard" size="full">
         {selectedLearner && (
-          <div className="space-y-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xl font-bold">
-                {selectedLearner.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
-              </div>
-              <div>
-                <h3 className="text-lg font-bold text-white">{selectedLearner.fullName}</h3>
-                <p className="text-sm text-slate-400">{selectedLearner.email}</p>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                  ['Department', selectedLearner.department],
-                  ['Campaign', selectedLearner.campaign],
-                  ['Site', selectedLearner.site],
-                  ['Supervisor', selectedLearner.supervisor],
-                  ['Manager', selectedLearner.manager],
-                  ['Phone', selectedLearner.phone],
-                  ['Email', selectedLearner.email],
-                  ['Start Date', formatDate(selectedLearner.startDate)],
-                  ['Expected End', formatDate(selectedLearner.expectedEndDate)],
-                  ['Status', selectedLearner.status],
-                ].map(([label, value]) => (
-                <div key={label as string} className="px-4 py-3 bg-slate-800/30 rounded-xl">
-                  <p className="text-xs text-slate-500 mb-1">{label as string}</p>
-                  <p className="text-sm text-white font-medium">{value as string || '-'}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+          <LearnerProfile
+            learnerName={selectedLearner.fullName}
+            onBack={() => setSelectedLearner(null)}
+          />
         )}
       </Modal>
 
