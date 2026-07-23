@@ -1,18 +1,56 @@
 import React, { useMemo, useState } from 'react';
 import { Search, Plus, Filter, ChevronDown, MoreHorizontal, Eye, Edit, Trash2 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import DataTable from '../common/DataTable';
+import { useToast } from '../../context/ToastContext';
+import { LearnersService } from '../../services/googleSheets';
 import Modal from '../common/Modal';
 import Badge from '../common/Badge';
 import EmptyState from '../common/EmptyState';
 import LoadingSkeleton from '../common/LoadingSkeleton';
 import { clsx, formatDate } from '../../services/utils';
-import { Learner } from '../../types'; // eslint-disable-line @typescript-eslint/no-unused-vars
+import { Learner } from '../../types';
+
+const emptyForm = {
+  fullName: '', department: '', campaign: '', site: '',
+  supervisor: '', manager: '', phone: '', email: '',
+  startDate: '', expectedEndDate: '',
+};
 
 const LearnerList: React.FC = () => {
-  const { learners, loading, filters, setFilters } = useApp();
+  const { learners, loading, filters, setFilters, refresh } = useApp();
+  const { showToast } = useToast();
   const [showAddModal, setShowAddModal] = useState(false);
   const [selectedLearner, setSelectedLearner] = useState<Learner | null>(null);
+  const [formData, setFormData] = useState({ ...emptyForm });
+  const [saving, setSaving] = useState(false);
+
+  const handleChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.fullName.trim()) {
+      showToast('error', 'Full Name is required');
+      return;
+    }
+    setSaving(true);
+    try {
+      const learner: Learner = { ...formData, status: 'Active' };
+      const result = await LearnersService.create(learner);
+      if (result) {
+        showToast('success', `Learner "${formData.fullName}" added successfully`);
+        setShowAddModal(false);
+        setFormData({ ...emptyForm });
+        await refresh();
+      } else {
+        showToast('error', 'Failed to add learner');
+      }
+    } catch {
+      showToast('error', 'An error occurred while saving');
+    } finally {
+      setSaving(false);
+    }
+  };
 
   const filteredLearners = useMemo(() => {
     return learners.filter(l => {
@@ -189,26 +227,32 @@ const LearnerList: React.FC = () => {
       </Modal>
 
       {/* Add Learner Modal */}
-      <Modal isOpen={showAddModal} onClose={() => setShowAddModal(false)} title="Add New Learner" size="lg">
+      <Modal isOpen={showAddModal} onClose={() => { setShowAddModal(false); setFormData({ ...emptyForm }); }} title="Add New Learner" size="lg">
         <div className="grid grid-cols-2 gap-4">
-          {['Full Name', 'Department', 'Campaign', 'Site', 'Supervisor', 'Manager', 'Phone', 'Email'].map(field => (
+          {(['fullName', 'department', 'campaign', 'site', 'supervisor', 'manager', 'phone', 'email'] as const).map(field => (
             <div key={field}>
-              <label className="block text-sm text-slate-300 mb-1">{field}</label>
-              <input type="text" className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500/50" placeholder={field} />
+              <label className="block text-sm text-slate-300 mb-1">{field === 'fullName' ? 'Full Name' : field.charAt(0).toUpperCase() + field.slice(1)}</label>
+              <input
+                type={field === 'email' ? 'email' : 'text'}
+                value={formData[field]}
+                onChange={e => handleChange(field, e.target.value)}
+                className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500/50"
+                placeholder={field === 'fullName' ? 'Full Name' : field.charAt(0).toUpperCase() + field.slice(1)}
+              />
             </div>
           ))}
           <div>
             <label className="block text-sm text-slate-300 mb-1">Start Date</label>
-            <input type="date" className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500/50" />
+            <input type="date" value={formData.startDate} onChange={e => handleChange('startDate', e.target.value)} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500/50" />
           </div>
           <div>
             <label className="block text-sm text-slate-300 mb-1">Expected End Date</label>
-            <input type="date" className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500/50" />
+            <input type="date" value={formData.expectedEndDate} onChange={e => handleChange('expectedEndDate', e.target.value)} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm focus:outline-none focus:border-indigo-500/50" />
           </div>
         </div>
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-800/60">
-          <button onClick={() => setShowAddModal(false)} className="px-4 py-2 text-sm text-slate-400 hover:text-white transition-colors">Cancel</button>
-          <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-medium transition-colors">Save Learner</button>
+          <button onClick={() => { setShowAddModal(false); setFormData({ ...emptyForm }); }} className="px-4 py-2 text-sm text-slate-400 hover:text-white transition-colors">Cancel</button>
+          <button onClick={handleSubmit} disabled={saving} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl text-sm font-medium transition-colors">{saving ? 'Saving...' : 'Save Learner'}</button>
         </div>
       </Modal>
     </div>

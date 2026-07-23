@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Search, Plus, Filter, CheckCircle, XCircle } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useToast } from '../../context/ToastContext';
+import { AbsenteeismService } from '../../services/googleSheets';
 import Badge from '../common/Badge';
 import Modal from '../common/Modal';
 import EmptyState from '../common/EmptyState';
@@ -20,10 +21,18 @@ const STATUS_STYLES: Record<string, string> = {
   [AttendanceStatus.UNAUTHORISED_ABSENCE]: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
 };
 
+const attendanceFormDefaults = () => ({
+  learnerName: '', date: new Date().toISOString().split('T')[0],
+  attendanceStatus: AttendanceStatus.PRESENT, authorised: false,
+  reason: '', comments: '',
+});
+
 const AttendanceTracker: React.FC = () => {
-  const { absenteeism, learners, loading, filters, setFilters } = useApp();
+  const { absenteeism, learners, user, loading, filters, setFilters, refresh } = useApp();
   const { showToast } = useToast();
   const [showCaptureModal, setShowCaptureModal] = useState(false);
+  const [formData, setFormData] = useState(attendanceFormDefaults());
+  const [saving, setSaving] = useState(false);
 
   const filteredRecords = useMemo(() => {
     return absenteeism.filter(a => {
@@ -41,6 +50,49 @@ const AttendanceTracker: React.FC = () => {
   }, [absenteeism, learners, filters]);
 
   const today = new Date().toISOString().split('T')[0];
+
+  const selectedLearner = useMemo(() =>
+    learners.find(l => l.fullName === formData.learnerName),
+  [learners, formData.learnerName]);
+
+  const handleAttendanceChange = (field: string, value: string | boolean) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleCaptureSubmit = async () => {
+    if (!formData.learnerName) {
+      showToast('error', 'Please select a learner');
+      return;
+    }
+    setSaving(true);
+    try {
+      const record: Omit<AbsenteeismRecord, 'id'> = {
+        learnerName: formData.learnerName,
+        date: formData.date,
+        attendanceStatus: formData.attendanceStatus as AttendanceStatus,
+        authorised: formData.authorised,
+        reason: formData.reason,
+        capturedBy: user.name,
+        supervisor: selectedLearner?.supervisor || '',
+        manager: selectedLearner?.manager || '',
+        comments: formData.comments,
+      };
+      const result = await AbsenteeismService.create(record);
+      if (result) {
+        showToast('success', 'Attendance captured successfully');
+        setShowCaptureModal(false);
+        setFormData(attendanceFormDefaults());
+        await refresh();
+      } else {
+        showToast('error', 'Failed to capture attendance');
+      }
+    } catch {
+      showToast('error', 'An error occurred while saving');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const todayRecords = useMemo(() => absenteeism.filter(a => a.date === today), [absenteeism, today]);
   const presentToday = todayRecords.filter(a => a.attendanceStatus === AttendanceStatus.PRESENT).length;
   const absentToday = todayRecords.filter(a =>
@@ -146,37 +198,41 @@ const AttendanceTracker: React.FC = () => {
       )}
 
       {/* Capture Attendance Modal */}
-      <Modal isOpen={showCaptureModal} onClose={() => setShowCaptureModal(false)} title="Capture Attendance" size="lg">
+      <Modal isOpen={showCaptureModal} onClose={() => { setShowCaptureModal(false); setFormData(attendanceFormDefaults()); }} title="Capture Attendance" size="lg">
         <div className="grid grid-cols-2 gap-4">
           <div className="col-span-2">
             <label className="block text-sm text-slate-300 mb-1">Learner</label>
-            <select className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm">
+            <select value={formData.learnerName} onChange={e => handleAttendanceChange('learnerName', e.target.value)} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm">
               <option value="">Select learner</option>
-              {learners.map(l => <option key={l.fullName}>{l.fullName}</option>)}
+              {learners.map(l => <option key={l.fullName} value={l.fullName}>{l.fullName}</option>)}
             </select>
           </div>
           <div>
             <label className="block text-sm text-slate-300 mb-1">Date</label>
-            <input type="date" defaultValue={today} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm" />
+            <input type="date" value={formData.date} onChange={e => handleAttendanceChange('date', e.target.value)} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm" />
           </div>
           <div>
             <label className="block text-sm text-slate-300 mb-1">Status</label>
-            <select className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm">
-              {Object.values(AttendanceStatus).map(s => <option key={s}>{s}</option>)}
+            <select value={formData.attendanceStatus} onChange={e => handleAttendanceChange('attendanceStatus', e.target.value)} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm">
+              {Object.values(AttendanceStatus).map(s => <option key={s} value={s}>{s}</option>)}
             </select>
+          </div>
+          <div className="flex items-center gap-2">
+            <input type="checkbox" id="authorised" checked={formData.authorised} onChange={e => handleAttendanceChange('authorised', e.target.checked)} className="rounded bg-slate-800 border-slate-700" />
+            <label htmlFor="authorised" className="text-sm text-slate-300">Authorised</label>
           </div>
           <div className="col-span-2">
             <label className="block text-sm text-slate-300 mb-1">Reason</label>
-            <input type="text" className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm" />
+            <input type="text" value={formData.reason} onChange={e => handleAttendanceChange('reason', e.target.value)} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm" />
           </div>
           <div className="col-span-2">
             <label className="block text-sm text-slate-300 mb-1">Comments</label>
-            <textarea rows={2} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm" />
+            <textarea rows={2} value={formData.comments} onChange={e => handleAttendanceChange('comments', e.target.value)} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm" />
           </div>
         </div>
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-slate-800/60">
-          <button onClick={() => setShowCaptureModal(false)} className="px-4 py-2 text-sm text-slate-400 hover:text-white">Cancel</button>
-          <button className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-medium">Save Record</button>
+          <button onClick={() => { setShowCaptureModal(false); setFormData(attendanceFormDefaults()); }} className="px-4 py-2 text-sm text-slate-400 hover:text-white">Cancel</button>
+          <button onClick={handleCaptureSubmit} disabled={saving} className="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl text-sm font-medium">{saving ? 'Saving...' : 'Save Record'}</button>
         </div>
       </Modal>
     </div>

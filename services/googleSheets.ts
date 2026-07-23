@@ -54,6 +54,24 @@ async function postToSheet(tabName: string, data: string[][]): Promise<boolean> 
   }
 }
 
+async function postAction(action: string, data: Record<string, unknown>): Promise<{ success: boolean; [key: string]: unknown }> {
+  try {
+    const payload = { action, ...data };
+    const res = await fetch(APPS_SCRIPT_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain' },
+      body: JSON.stringify(payload),
+    });
+    const text = await res.text();
+    const result = JSON.parse(text);
+    console.log(`Action "${action}":`, result);
+    return result;
+  } catch (err) {
+    console.error(`Error executing action "${action}":`, err);
+    return { success: false, error: String(err) };
+  }
+}
+
 function colIndex(headers: string[], ...names: string[]): number {
   const h = headers.map(h => h.toLowerCase().replace(/\s+/g, ''));
   for (const name of names) {
@@ -141,11 +159,8 @@ export const LearnersService = {
   },
 
   async create(learner: Learner): Promise<Learner | null> {
-    const row = [learner.fullName, learner.department, learner.campaign, learner.site,
-      learner.supervisor, learner.manager, learner.startDate, learner.expectedEndDate,
-      learner.status, learner.phone, learner.email];
-    await postToSheet(SHEETS.LEARNERS, [row]);
-    return learner;
+    const result = await postAction('addLearner', learner as unknown as Record<string, unknown>);
+    return result.success ? learner : null;
   },
 };
 
@@ -162,12 +177,18 @@ export const LeaveRequestsService = {
 
   async create(request: Omit<LeaveRequest, 'id'>): Promise<LeaveRequest | null> {
     const newRequest: LeaveRequest = { ...request, id: generateId() };
-    const row = [newRequest.id, newRequest.learnerName, newRequest.leaveType, newRequest.startDate,
-      newRequest.endDate, newRequest.daysRequested.toString(), newRequest.reason,
-      newRequest.medicalCertificate ? 'Yes' : 'No', newRequest.documentLink,
-      newRequest.approvedBy, newRequest.approvalDate, newRequest.status, newRequest.comments];
-    await postToSheet(SHEETS.LEAVE_REQUESTS, [row]);
-    return newRequest;
+    const result = await postAction('addLeaveRequest', newRequest as unknown as Record<string, unknown>);
+    return result.success ? newRequest : null;
+  },
+
+  async approve(id: string, approvedBy: string): Promise<boolean> {
+    const result = await postAction('approveLeave', { id, approvedBy });
+    return result.success === true;
+  },
+
+  async reject(id: string, comments?: string): Promise<boolean> {
+    const result = await postAction('rejectLeave', { id, comments: comments || '' });
+    return result.success === true;
   },
 };
 
@@ -218,11 +239,8 @@ export const AbsenteeismService = {
 
   async create(record: Omit<AbsenteeismRecord, 'id'>): Promise<AbsenteeismRecord | null> {
     const newRecord: AbsenteeismRecord = { ...record, id: generateId() };
-    const row = [newRecord.date, newRecord.learnerName, newRecord.attendanceStatus,
-      newRecord.authorised ? 'Yes' : 'No', newRecord.reason, newRecord.capturedBy,
-      newRecord.supervisor, newRecord.manager, newRecord.comments];
-    await postToSheet(SHEETS.ABSENTEEISM, [row]);
-    return newRecord;
+    const result = await postAction('captureAttendance', newRecord as unknown as Record<string, unknown>);
+    return result.success ? newRecord : null;
   },
 };
 
