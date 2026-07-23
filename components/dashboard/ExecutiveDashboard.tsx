@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   Users, UserCheck, Clock, CalendarCheck, CalendarDays, Wallet,
   AlertTriangle, Ban, CheckCircle, Timer, BarChart3, Activity
@@ -33,7 +33,6 @@ const CustomTooltip = ({ active, payload, label }: any) => {
 
 const ExecutiveDashboard: React.FC = () => {
   const { dashboardStats, chartData, departmentData, loading } = useApp();
-  const [timeframe, setTimeframe] = useState<'7d' | '30d' | '90d'>('30d');
 
   const leaveTypeData = useMemo(() => {
     if (!chartData || chartData.length === 0) return [];
@@ -70,22 +69,6 @@ const ExecutiveDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Timeframe selector */}
-      <div className="flex items-center gap-2">
-        {(['7d', '30d', '90d'] as const).map(t => (
-          <button
-            key={t}
-            onClick={() => setTimeframe(t)}
-            className={clsx(
-              'px-3 py-1.5 rounded-lg text-xs font-medium transition-colors',
-              timeframe === t ? 'bg-indigo-500/10 text-indigo-400 border border-indigo-500/20' : 'text-slate-400 hover:text-white'
-            )}
-          >
-            {t}
-          </button>
-        ))}
-      </div>
-
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <StatsCard title="Total Learners" value={stats.totalLearners} icon={<Users size={20} />} color="indigo" subtitle="All registered learners" />
