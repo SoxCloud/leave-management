@@ -176,7 +176,7 @@ const LearnerList: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-slate-800/40">
               {filteredLearners.map(learner => (
-                <tr key={learner.fullName} className="hover:bg-slate-800/30 transition-colors">
+                <tr key={learner.fullName} className={clsx('hover:bg-slate-800/30 transition-colors', learner.status !== 'Active' && 'opacity-50')}>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold">

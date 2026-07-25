@@ -96,11 +96,14 @@ const LeaveCalendar: React.FC = () => {
                   {day}
                 </span>
                 <div className="mt-1 space-y-0.5">
-                  {dayLeaves.slice(0, 2).map(lr => (
-                    <div key={lr.id} className={clsx('text-[10px] px-1 py-0.5 rounded border truncate', TYPE_COLORS[lr.leaveType])}>
-                      {getLearnerName(lr.learnerName).split(' ')[0]}
-                    </div>
-                  ))}
+                  {dayLeaves.slice(0, 2).map(lr => {
+                    const isInactive = learners.find(l => l.fullName === lr.learnerName)?.status !== 'Active';
+                    return (
+                      <div key={lr.id} className={clsx('text-[10px] px-1 py-0.5 rounded border truncate', TYPE_COLORS[lr.leaveType], isInactive && 'opacity-40')}>
+                        {getLearnerName(lr.learnerName).split(' ')[0]}
+                      </div>
+                    );
+                  })}
                   {dayLeaves.length > 2 && (
                     <span className="text-[10px] text-slate-500">+{dayLeaves.length - 2} more</span>
                   )}
@@ -123,7 +126,7 @@ const LeaveCalendar: React.FC = () => {
             {selectedLeaves.map(lr => (
               <div key={lr.id} className="px-3 py-2 bg-slate-800/30 rounded-lg">
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-white font-medium">{getLearnerName(lr.learnerName)}</span>
+                  <span className={clsx('text-sm font-medium', learners.find(l => l.fullName === lr.learnerName)?.status !== 'Active' ? 'text-slate-500' : 'text-white')}>{getLearnerName(lr.learnerName)}</span>
                   <span className={clsx('text-[10px] px-1.5 py-0.5 rounded', lr.status === LeaveStatus.APPROVED ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400')}>
                     {lr.status}
                   </span>

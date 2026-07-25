@@ -229,7 +229,7 @@ const LeaveRequests: React.FC = () => {
               <div
                 key={lr.id}
                 onClick={() => setSelectedRequest(lr)}
-                className="flex items-center gap-4 px-5 py-4 rounded-xl border border-slate-800/60 bg-slate-900/50 hover:bg-slate-800/50 transition-all cursor-pointer"
+                className={clsx('flex items-center gap-4 px-5 py-4 rounded-xl border border-slate-800/60 bg-slate-900/50 hover:bg-slate-800/50 transition-all cursor-pointer', learner && learner.status !== 'Active' && 'opacity-50')}
               >
                 {statusIcon}
                 <div className="flex-1 min-w-0">
@@ -315,7 +315,7 @@ const LeaveRequests: React.FC = () => {
             <label className="block text-sm text-slate-300 mb-1">Learner</label>
             <select value={formData.learnerName} onChange={e => handleNewChange('learnerName', e.target.value)} className="w-full px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-white text-sm">
               <option value="">Select learner</option>
-              {learners.map(l => <option key={l.fullName} value={l.fullName}>{l.fullName}</option>)}
+              {learners.map(l => <option key={l.fullName} value={l.fullName} className={l.status !== 'Active' ? 'text-slate-500' : ''}>{l.fullName}</option>)}
             </select>
           </div>
           <div>

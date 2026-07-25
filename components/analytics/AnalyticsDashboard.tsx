@@ -124,7 +124,7 @@ const AnalyticsDashboard: React.FC = () => {
           <h3 className="text-sm font-semibold text-white mb-4">Most Leave Taken</h3>
           <div className="space-y-2">
             {analytics.mostLeave.map((l, i) => (
-              <div key={l.name} className="flex items-center gap-3 px-3 py-2 bg-slate-800/30 rounded-lg">
+              <div key={l.name} className={clsx('flex items-center gap-3 px-3 py-2 bg-slate-800/30 rounded-lg', learners.find(ln => ln.fullName === l.name)?.status !== 'Active' && 'opacity-50')}>
                 <span className="text-sm font-bold text-slate-500 w-6">{i + 1}</span>
                 <div className="flex-1">
                   <p className="text-sm text-white font-medium">{l.name}</p>
@@ -138,7 +138,7 @@ const AnalyticsDashboard: React.FC = () => {
           <h3 className="text-sm font-semibold text-white mb-3 mt-6">Least Leave Taken</h3>
           <div className="space-y-2">
             {analytics.leastLeave.map((l, i) => (
-              <div key={l.name} className="flex items-center gap-3 px-3 py-2 bg-slate-800/30 rounded-lg">
+              <div key={l.name} className={clsx('flex items-center gap-3 px-3 py-2 bg-slate-800/30 rounded-lg', learners.find(ln => ln.fullName === l.name)?.status !== 'Active' && 'opacity-50')}>
                 <span className="text-sm font-bold text-slate-500 w-6">{i + 1}</span>
                 <div className="flex-1">
                   <p className="text-sm text-white font-medium">{l.name}</p>

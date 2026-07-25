@@ -105,7 +105,7 @@ const ReportGenerator: React.FC = () => {
                     ? Math.round((attRecords.filter(a => a.attendanceStatus === AttendanceStatus.PRESENT).length / attRecords.length) * 100)
                     : 100;
                   return (
-                    <tr key={l.fullName}>
+                    <tr key={l.fullName} className={l.status !== 'Active' ? 'opacity-50' : ''}>
                       <td className="px-4 py-2 text-sm text-white">{l.fullName}</td>
                       <td className="px-4 py-2 text-sm text-slate-300">{l.department}</td>
                       <td className="px-4 py-2 text-sm text-slate-300 text-right">{accrued}</td>

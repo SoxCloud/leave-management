@@ -80,7 +80,7 @@ const AbsenteeismReport: React.FC = () => {
           <h3 className="text-sm font-semibold text-white mb-4">Top 10 Highest Absentees</h3>
           <div className="space-y-2">
             {topAbsentees.slice(0, 10).map((learner, i) => (
-              <div key={learner.name} className="flex items-center gap-3 px-3 py-2.5 bg-slate-800/30 rounded-lg">
+              <div key={learner.name} className={clsx('flex items-center gap-3 px-3 py-2.5 bg-slate-800/30 rounded-lg', learners.find(l => l.fullName === learner.name)?.status !== 'Active' && 'opacity-50')}>
                 <span className={clsx(
                   'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold',
                   i < 3 ? 'bg-red-500/20 text-red-400' : 'bg-slate-700/50 text-slate-400'
@@ -108,7 +108,7 @@ const AbsenteeismReport: React.FC = () => {
           <h3 className="text-sm font-semibold text-white mb-4">Most Punctual Learners</h3>
           <div className="space-y-2">
             {mostPunctual.map((learner, i) => (
-              <div key={learner.name} className="flex items-center gap-3 px-3 py-2.5 bg-slate-800/30 rounded-lg">
+              <div key={learner.name} className={clsx('flex items-center gap-3 px-3 py-2.5 bg-slate-800/30 rounded-lg', learners.find(l => l.fullName === learner.name)?.status !== 'Active' && 'opacity-50')}>
                 <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
                   <Award size={14} className="text-emerald-400" />
                 </div>
