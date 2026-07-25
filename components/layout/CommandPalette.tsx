@@ -18,7 +18,6 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
     { id: 'learners', label: 'Go to Learners', icon: '→', action: () => setActiveTab('learners') },
     { id: 'leave', label: 'Go to Leave Requests', icon: '→', action: () => setActiveTab('leave') },
     { id: 'attendance', label: 'Go to Attendance', icon: '→', action: () => setActiveTab('attendance') },
-    { id: 'reports', label: 'Go to Reports', icon: '→', action: () => setActiveTab('reports') },
     { id: 'analytics', label: 'Go to Analytics', icon: '→', action: () => setActiveTab('analytics') },
     { id: 'settings', label: 'Go to Settings', icon: '→', action: () => setActiveTab('settings') },
     ...learners.slice(0, 5).map(l => ({

@@ -10,7 +10,6 @@ import LeaveRequests from './components/leave/LeaveRequests';
 import LeaveCalendar from './components/leave/LeaveCalendar';
 import AttendanceTracker from './components/attendance/AttendanceTracker';
 import AbsenteeismReport from './components/attendance/AbsenteeismReport';
-import ReportGenerator from './components/reports/ReportGenerator';
 import AnalyticsDashboard from './components/analytics/AnalyticsDashboard';
 import CompanySettings from './components/settings/CompanySettings';
 import { RefreshCw } from 'lucide-react';
@@ -22,7 +21,7 @@ const LeaveManagementApp: React.FC = () => {
   const getTitle = () => {
     const titles: Record<string, string> = {
       dashboard: 'Dashboard', learners: 'Learners', leave: 'Leave Requests',
-      attendance: 'Attendance', calendar: 'Leave Calendar', reports: 'Reports',
+      attendance: 'Attendance', calendar: 'Leave Calendar',
       analytics: 'Analytics', settings: 'Settings',
     };
     return titles[activeTab] || 'LeaveHub';
@@ -48,7 +47,6 @@ const LeaveManagementApp: React.FC = () => {
       case 'leave': return <LeaveRequests />;
       case 'attendance': return <><AttendanceTracker /><AbsenteeismReport /></>;
       case 'calendar': return <LeaveCalendar />;
-      case 'reports': return <ReportGenerator />;
       case 'analytics': return <AnalyticsDashboard />;
       case 'settings': return <CompanySettings />;
       default: return <ExecutiveDashboard />;

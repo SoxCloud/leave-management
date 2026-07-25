@@ -12,6 +12,7 @@ import {
   AreaChart, Area
 } from 'recharts';
 import { clsx } from '../../services/utils';
+import ReportGenerator from '../reports/ReportGenerator';
 
 const COLORS = ['#6366f1', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#06b6d4'];
 const PIE_COLORS = ['#6366f1', '#f59e0b', '#ef4444', '#8b5cf6', '#10b981'];
@@ -87,6 +88,9 @@ const ExecutiveDashboard: React.FC = () => {
         <StatsCard title="Late Arrivals" value={stats.lateArrivals} icon={<Timer size={20} />} color="amber" subtitle="Total late arrivals" />
         <StatsCard title="Today's Attendance" value={`${stats.todayAttendance.present}/${stats.todayAttendance.total}`} icon={<Activity size={20} />} color="blue" subtitle="Present today" />
       </div>
+
+      {/* Reports Section */}
+      <ReportGenerator />
 
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

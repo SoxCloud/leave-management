@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+// @ts-ignore: side-effect import for CSS
 import './src/index.css';
 import LeaveAppWrapper from './LeaveApp';
 

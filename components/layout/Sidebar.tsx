@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   LayoutDashboard, Users, CalendarCheck, ClipboardList, Timer,
-  BarChart3, Settings, ChevronLeft, FileText
+  BarChart3, Settings, ChevronLeft
 } from 'lucide-react';
 import { clsx, getInitials } from '../../services/utils';
 import { AppUser } from '../../types';
@@ -20,7 +20,6 @@ const navItems = [
   { id: 'leave', label: 'Leave Requests', icon: CalendarCheck },
   { id: 'attendance', label: 'Attendance', icon: ClipboardList },
   { id: 'calendar', label: 'Calendar', icon: Timer },
-  { id: 'reports', label: 'Reports', icon: FileText },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
   { id: 'settings', label: 'Settings', icon: Settings },
 ];
