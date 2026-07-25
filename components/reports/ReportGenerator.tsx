@@ -12,33 +12,6 @@ const ReportGenerator: React.FC = () => {
 
   const reportTypes = ['Individual Leave Report', 'Monthly Leave Summary', 'Annual Leave Summary', 'Attendance Report', 'Absenteeism Report', 'Department Report'];
 
-  const leaveSummary = useMemo(() => {
-    const approved = leaveRequests.filter(lr => lr.status === LeaveStatus.APPROVED);
-    return {
-      total: approved.length,
-      annual: approved.filter(lr => lr.leaveType === LeaveType.ANNUAL).reduce((s, lr) => s + lr.daysRequested, 0),
-      sick: approved.filter(lr => lr.leaveType === LeaveType.SICK).reduce((s, lr) => s + lr.daysRequested, 0),
-      family: approved.filter(lr => lr.leaveType === LeaveType.FAMILY_RESPONSIBILITY).reduce((s, lr) => s + lr.daysRequested, 0),
-    };
-  }, [leaveRequests]);
-
-  const departmentReport = useMemo(() => {
-    const map: Record<string, { learners: number; leave: number; absences: number }> = {};
-    learners.forEach(l => {
-      if (!map[l.department]) map[l.department] = { learners: 0, leave: 0, absences: 0 };
-      map[l.department].learners++;
-    });
-    leaveRequests.filter(lr => lr.status === LeaveStatus.APPROVED).forEach(lr => {
-      const learner = learners.find(l => l.fullName === lr.learnerName);
-      if (learner && map[learner.department]) map[learner.department].leave += lr.daysRequested;
-    });
-    absenteeism.forEach(a => {
-      const learner = learners.find(l => l.fullName === a.learnerName);
-      if (learner && map[learner.department] && a.attendanceStatus !== AttendanceStatus.PRESENT) map[learner.department].absences++;
-    });
-    return Object.entries(map).map(([dept, data]) => ({ department: dept, ...data }));
-  }, [learners, leaveRequests, absenteeism]);
-
   const handlePrint = () => {
     window.print();
   };
@@ -104,47 +77,6 @@ const ReportGenerator: React.FC = () => {
           <p className="text-sm text-slate-400">Generated on {new Date().toLocaleDateString('en-ZA')}</p>
         </div>
 
-        {/* Summary */}
-        <div className="grid grid-cols-4 gap-4">
-          {[
-            { label: 'Total Learners', value: learners.length },
-            { label: 'Total Leave Days', value: leaveSummary.total },
-            { label: 'Annual Leave', value: leaveSummary.annual },
-            { label: 'Sick Leave', value: leaveSummary.sick },
-          ].map(s => (
-            <div key={s.label} className="px-4 py-3 bg-slate-800/30 rounded-xl text-center">
-              <p className="text-xs text-slate-500">{s.label}</p>
-              <p className="text-xl font-bold text-white mt-1">{s.value}</p>
-            </div>
-          ))}
-        </div>
-
-        {/* Department Breakdown */}
-        <div>
-          <h3 className="text-sm font-semibold text-white mb-3">Department Breakdown</h3>
-          <div className="overflow-x-auto rounded-lg border border-slate-800/40">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-slate-800/50">
-                  <th className="px-4 py-2 text-left text-xs text-slate-400 uppercase">Department</th>
-                  <th className="px-4 py-2 text-right text-xs text-slate-400 uppercase">Learners</th>
-                  <th className="px-4 py-2 text-right text-xs text-slate-400 uppercase">Leave Used</th>
-                  <th className="px-4 py-2 text-right text-xs text-slate-400 uppercase">Absences</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-800/40">
-                {departmentReport.map(d => (
-                  <tr key={d.department}>
-                    <td className="px-4 py-2 text-sm text-white">{d.department}</td>
-                    <td className="px-4 py-2 text-sm text-slate-300 text-right">{d.learners}</td>
-                    <td className="px-4 py-2 text-sm text-slate-300 text-right">{d.leave}</td>
-                    <td className="px-4 py-2 text-sm text-slate-300 text-right">{d.absences}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
 
         {/* All Learners Report */}
         <div>
