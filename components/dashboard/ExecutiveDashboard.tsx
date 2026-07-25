@@ -95,7 +95,7 @@ const ExecutiveDashboard: React.FC = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Monthly Leave Trends */}
-        <div className="rounded-2xl border border-slate-800/60 bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm p-6">
+        <div className="rounded-2xl border border-slate-800/60 bg-linear-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Monthly Leave Trends</h3>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={chartData}>
@@ -113,7 +113,7 @@ const ExecutiveDashboard: React.FC = () => {
         </div>
 
         {/* Leave Type Distribution */}
-        <div className="rounded-2xl border border-slate-800/60 bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm p-6">
+        <div className="rounded-2xl border border-slate-800/60 bg-linear-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Leave Type Distribution</h3>
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
@@ -140,7 +140,7 @@ const ExecutiveDashboard: React.FC = () => {
       {/* Second Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Department Comparison */}
-        <div className="rounded-2xl border border-slate-800/60 bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm p-6">
+        <div className="rounded-2xl border border-slate-800/60 bg-linear-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Department Comparison</h3>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={departmentChartData}>
@@ -157,7 +157,7 @@ const ExecutiveDashboard: React.FC = () => {
         </div>
 
         {/* Absenteeism Trend */}
-        <div className="rounded-2xl border border-slate-800/60 bg-gradient-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm p-6">
+        <div className="rounded-2xl border border-slate-800/60 bg-linear-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm p-6">
           <h3 className="text-sm font-semibold text-white mb-4">Absenteeism Trend</h3>
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={chartData}>
