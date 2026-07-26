@@ -8,7 +8,7 @@ import LoadingSkeleton from '../common/LoadingSkeleton';
 import { clsx, formatDate } from '../../services/utils';
 import { AttendanceStatus, AbsenteeismRecord } from '../../types';
 
-type RowStatus = 'Present' | 'Absent' | 'Leave' | 'Off';
+type RowStatus = 'Present' | 'Late' | 'Absent' | 'Leave' | 'Off';
 
 interface AttendanceRow {
   status: RowStatus;
@@ -28,6 +28,7 @@ const AttendanceTracker: React.FC = () => {
 
   const todayRecords = useMemo(() => absenteeism.filter(a => a.date === today), [absenteeism, today]);
   const presentToday = todayRecords.filter(a => a.attendanceStatus === AttendanceStatus.PRESENT).length;
+  const lateToday = todayRecords.filter(a => a.attendanceStatus === AttendanceStatus.LATE).length;
   const absentToday = todayRecords.filter(a =>
     a.attendanceStatus === AttendanceStatus.ABSENT ||
     a.attendanceStatus === AttendanceStatus.NO_CALL_NO_SHOW
@@ -40,6 +41,7 @@ const AttendanceTracker: React.FC = () => {
       if (existing) {
         const status: RowStatus =
           existing.attendanceStatus === AttendanceStatus.PRESENT ? 'Present' :
+          existing.attendanceStatus === AttendanceStatus.LATE ? 'Late' :
           existing.attendanceStatus === AttendanceStatus.AUTHORISED_ABSENCE ? 'Leave' :
           'Absent';
         map.set(learner.fullName, { status, authorised: existing.authorised });
@@ -68,6 +70,7 @@ const AttendanceTracker: React.FC = () => {
       if (row.status === 'Off') continue;
       const learner = learners.find(l => l.fullName === learnerName);
       const attendanceStatus =
+        row.status === 'Late' ? AttendanceStatus.LATE :
         row.status === 'Absent' ? AttendanceStatus.ABSENT :
         row.status === 'Leave' ? AttendanceStatus.AUTHORISED_ABSENCE :
         AttendanceStatus.PRESENT;
@@ -117,17 +120,21 @@ const AttendanceTracker: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Today's Summary */}
-      <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Present Today</p>
-          <p className="text-2xl font-bold text-green-600 dark:text-green-400">{presentToday}</p>
+      <div className="grid grid-cols-4 gap-4">
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#0B0B0B] p-4 shadow-sm">
+          <p className="text-xs text-gray-500 dark:text-[#9CA3AF] mb-1">Present Today</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{presentToday}</p>
         </div>
-        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Absent Today</p>
-          <p className="text-2xl font-bold text-red-600 dark:text-red-400">{absentToday}</p>
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#0B0B0B] p-4 shadow-sm">
+          <p className="text-xs text-gray-500 dark:text-[#9CA3AF] mb-1">Late Today</p>
+          <p className="text-2xl font-bold text-[#EF4444]">{lateToday}</p>
         </div>
-        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm">
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Total Learners</p>
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#0B0B0B] p-4 shadow-sm">
+          <p className="text-xs text-gray-500 dark:text-[#9CA3AF] mb-1">Absent Today</p>
+          <p className="text-2xl font-bold text-[#EF4444]">{absentToday}</p>
+        </div>
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#0B0B0B] p-4 shadow-sm">
+          <p className="text-xs text-gray-500 dark:text-[#9CA3AF] mb-1">Total Learners</p>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">{learners.length}</p>
         </div>
       </div>
@@ -199,12 +206,13 @@ const AttendanceTracker: React.FC = () => {
                             const current = rows.get(learner.fullName);
                             setRow(learner.fullName, {
                               status,
-                              authorised: status === 'Absent' || status === 'Leave' ? (current?.authorised ?? false) : false,
+                              authorised: status === 'Late' || status === 'Absent' || status === 'Leave' ? (current?.authorised ?? false) : false,
                             });
                           }}
                           className="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:border-indigo-500"
                         >
                           <option value="Present">Present</option>
+                          <option value="Late">Late</option>
                           <option value="Absent">Absent</option>
                           <option value="Leave">Leave</option>
                           <option value="Off">Off</option>
@@ -215,7 +223,7 @@ const AttendanceTracker: React.FC = () => {
                       </div>
                     </td>
                     <td className="px-4 py-2">
-                      {row.status === 'Absent' || row.status === 'Leave' ? (
+                      {row.status === 'Late' || row.status === 'Absent' || row.status === 'Leave' ? (
                         <button
                           onClick={() => setRow(learner.fullName, { ...row, authorised: !row.authorised })}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${

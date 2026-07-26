@@ -40,7 +40,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, activeTab, setActiveTab, collap
         </button>
       </div>
 
-      <nav className="flex-1 py-6 px-3 space-y-1.5 overflow-y-auto">
+      <nav className="flex-1 py-6 px-3 space-y-1.5 overflow-y-auto min-h-0">
         {navItems.map(item => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -64,7 +64,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, activeTab, setActiveTab, collap
         })}
       </nav>
 
-      <div className="p-3 pt-2 border-t border-gray-100 dark:border-gray-800">
+      <div className="mt-auto p-3 pt-2 border-t border-gray-100 dark:border-gray-800">
         <div className={clsx('flex items-center gap-3 px-3 py-2 rounded-lg', collapsed && 'justify-center')}>
           <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-semibold shrink-0">
             {getInitials(user.name)}
@@ -72,7 +72,7 @@ const Sidebar: React.FC<SidebarProps> = ({ user, activeTab, setActiveTab, collap
           {!collapsed && (
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user.name}</p>
-              <p className="text-xs text-gray-400 dark:text-gray-500 truncate">Admin</p>
+              <p className="text-xs text-gray-400 dark:text-gray-500 truncate capitalize">{user.role.toLowerCase()}</p>
             </div>
           )}
         </div>
