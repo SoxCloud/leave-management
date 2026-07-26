@@ -78,7 +78,7 @@ const LearnerList: React.FC = () => {
       if (filters.department && l.department !== filters.department) return false;
       if (filters.manager && l.manager !== filters.manager) return false;
       if (filters.supervisor && l.supervisor !== filters.supervisor) return false;
-      if (filters.status && l.status !== filters.status) return false;
+      if (filters.status && l.status.toLowerCase() !== filters.status.toLowerCase()) return false;
       return true;
     });
   }, [learners, filters]);
