@@ -29,7 +29,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
   }, []);
 
   return (
-    <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
+    <div className="h-screen flex overflow-hidden bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar
@@ -57,7 +57,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
         </div>
       )}
 
-      <div className="flex-1 flex flex-col min-h-screen">
+      <div className="flex-1 flex flex-col h-screen">
         <TopNav
           title={title}
           searchQuery={filters.search}
