@@ -52,21 +52,21 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]" onClick={onClose}>
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
+      <div className="absolute inset-0 bg-gray-900/30" />
       <div
-        className="relative w-full max-w-lg bg-slate-900 border border-slate-700/50 rounded-2xl shadow-2xl overflow-hidden animate-slide-up"
+        className="relative w-full max-w-lg bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl shadow-lg overflow-hidden animate-slide-up"
         onClick={e => e.stopPropagation()}
       >
-        <div className="flex items-center gap-3 px-4 py-3 border-b border-slate-800">
-          <Search size={18} className="text-slate-500" />
+        <div className="flex items-center gap-3 px-4 py-3 border-b border-gray-200 dark:border-gray-700">
+          <Search size={18} className="text-gray-400 dark:text-gray-500" />
           <input
             autoFocus
             placeholder="Type a command or search..."
             value={query}
             onChange={e => { setQuery(e.target.value); setSelectedIndex(0); }}
-            className="flex-1 bg-transparent text-white text-sm placeholder-slate-500 focus:outline-none"
+            className="flex-1 bg-transparent text-gray-900 dark:text-white text-sm placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none"
           />
-          <kbd className="px-2 py-0.5 text-xs bg-slate-800 rounded text-slate-400 border border-slate-700">ESC</kbd>
+          <kbd className="px-2 py-0.5 text-xs bg-gray-100 dark:bg-gray-800 rounded text-gray-500 dark:text-gray-400 border border-gray-200 dark:border-gray-700">ESC</kbd>
         </div>
         <div className="max-h-80 overflow-y-auto p-2">
           {filtered.map((cmd, i) => (
@@ -75,7 +75,7 @@ const CommandPalette: React.FC<CommandPaletteProps> = ({ isOpen, onClose }) => {
               onClick={() => { cmd.action(); onClose(); }}
               className={clsx(
                 'w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-colors',
-                i === selectedIndex ? 'bg-indigo-500/10 text-indigo-400' : 'text-slate-400 hover:text-white hover:bg-slate-800/50'
+                i === selectedIndex ? 'bg-indigo-50 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300' : 'text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800'
               )}
             >
               <span className="w-6 text-center">{cmd.icon}</span>

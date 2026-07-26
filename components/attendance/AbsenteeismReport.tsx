@@ -38,35 +38,35 @@ const AbsenteeismReport: React.FC = () => {
     <div className="space-y-6">
       {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-xl border border-slate-800/60 bg-slate-900/50 p-4">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <AlertTriangle size={16} className="text-red-400" />
-            <span className="text-xs text-slate-500">Total Absences</span>
+            <AlertTriangle size={16} className="text-red-600 dark:text-red-400" />
+            <span className="text-xs text-gray-500 dark:text-gray-400">Total Absences</span>
           </div>
-          <p className="text-2xl font-bold text-red-400">{absenteeism.filter(a => a.attendanceStatus === AttendanceStatus.ABSENT || a.attendanceStatus === AttendanceStatus.NO_CALL_NO_SHOW).length}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{absenteeism.filter(a => a.attendanceStatus === AttendanceStatus.ABSENT || a.attendanceStatus === AttendanceStatus.NO_CALL_NO_SHOW).length}</p>
         </div>
-        <div className="rounded-xl border border-slate-800/60 bg-slate-900/50 p-4">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <Clock size={16} className="text-amber-400" />
-            <span className="text-xs text-slate-500">Late Arrivals</span>
+            <Clock size={16} className="text-amber-600 dark:text-amber-400" />
+            <span className="text-xs text-gray-500 dark:text-gray-400">Late Arrivals</span>
           </div>
-          <p className="text-2xl font-bold text-amber-400">{absenteeism.filter(a => a.attendanceStatus === AttendanceStatus.LATE).length}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{absenteeism.filter(a => a.attendanceStatus === AttendanceStatus.LATE).length}</p>
         </div>
-        <div className="rounded-xl border border-slate-800/60 bg-slate-900/50 p-4">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <Award size={16} className="text-emerald-400" />
-            <span className="text-xs text-slate-500">Avg Attendance Score</span>
+            <Award size={16} className="text-green-600 dark:text-green-400" />
+            <span className="text-xs text-gray-500 dark:text-gray-400">Avg Attendance Score</span>
           </div>
-          <p className="text-2xl font-bold text-emerald-400">
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
             {topAbsentees.length > 0 ? Math.round(topAbsentees.reduce((s, a) => s + a.score, 0) / topAbsentees.length) : 100}%
           </p>
         </div>
-        <div className="rounded-xl border border-slate-800/60 bg-slate-900/50 p-4">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <TrendingUp size={16} className="text-blue-400" />
-            <span className="text-xs text-slate-500">Unauthorised Rate</span>
+            <TrendingUp size={16} className="text-blue-600 dark:text-blue-400" />
+            <span className="text-xs text-gray-500 dark:text-gray-400">Unauthorised Rate</span>
           </div>
-          <p className="text-2xl font-bold text-blue-400">
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">
             {absenteeism.length > 0
               ? Math.round((absenteeism.filter(a => !a.authorised && a.attendanceStatus !== AttendanceStatus.PRESENT).length / absenteeism.length) * 100)
               : 0}%
@@ -76,53 +76,53 @@ const AbsenteeismReport: React.FC = () => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Absentees */}
-        <div className="rounded-2xl border border-slate-800/60 bg-gradient-to-br from-slate-900/80 to-slate-900/40 p-5">
-          <h3 className="text-sm font-semibold text-white mb-4">Top 10 Highest Absentees</h3>
-          <div className="space-y-2">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Top 10 Highest Absentees</h3>
+          <div className="space-y-0">
             {topAbsentees.slice(0, 10).map((learner, i) => (
-              <div key={learner.name} className={clsx('flex items-center gap-3 px-3 py-2.5 bg-slate-800/30 rounded-lg', learners.find(l => l.fullName === learner.name)?.status !== 'Active' && 'opacity-50')}>
+              <div key={learner.name} className={clsx('flex items-center gap-3 px-3 py-2 border-b border-gray-100 dark:border-gray-800', learners.find(l => l.fullName === learner.name)?.status !== 'Active' && 'opacity-50')}>
                 <span className={clsx(
                   'w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold',
-                  i < 3 ? 'bg-red-500/20 text-red-400' : 'bg-slate-700/50 text-slate-400'
+                  i < 3 ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400' : 'bg-gray-50 dark:bg-gray-800 text-gray-500 dark:text-gray-400'
                 )}>
                   {i + 1}
                 </span>
                 <div className="flex-1">
-                  <p className="text-sm text-white font-medium">{learner.name}</p>
-                  <p className="text-xs text-slate-500">{learner.absences} absences · {learner.late} late</p>
+                  <p className="text-sm text-gray-900 dark:text-white font-medium">{learner.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{learner.absences} absences · {learner.late} late</p>
                 </div>
                 <div className="text-right">
-                  <p className={clsx('text-sm font-bold', learner.score < 70 ? 'text-red-400' : learner.score < 85 ? 'text-amber-400' : 'text-emerald-400')}>
+                  <p className={clsx('text-sm font-bold', learner.score < 70 ? 'text-red-600 dark:text-red-400' : learner.score < 85 ? 'text-amber-600 dark:text-amber-400' : 'text-green-600 dark:text-green-400')}>
                     {learner.score}%
                   </p>
-                  <p className="text-[10px] text-slate-500">Score</p>
+                  <p className="text-[10px] text-gray-500 dark:text-gray-400">Score</p>
                 </div>
               </div>
             ))}
-            {topAbsentees.length === 0 && <p className="text-sm text-slate-500 text-center py-8">No attendance data available</p>}
+            {topAbsentees.length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-8">No attendance data available</p>}
           </div>
         </div>
 
         {/* Most Punctual */}
-        <div className="rounded-2xl border border-slate-800/60 bg-gradient-to-br from-slate-900/80 to-slate-900/40 p-5">
-          <h3 className="text-sm font-semibold text-white mb-4">Most Punctual Learners</h3>
-          <div className="space-y-2">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Most Punctual Learners</h3>
+          <div className="space-y-0">
             {mostPunctual.map((learner, i) => (
-              <div key={learner.name} className={clsx('flex items-center gap-3 px-3 py-2.5 bg-slate-800/30 rounded-lg', learners.find(l => l.fullName === learner.name)?.status !== 'Active' && 'opacity-50')}>
-                <div className="w-6 h-6 rounded-full bg-emerald-500/20 flex items-center justify-center">
-                  <Award size={14} className="text-emerald-400" />
+              <div key={learner.name} className={clsx('flex items-center gap-3 px-3 py-2 border-b border-gray-100 dark:border-gray-800', learners.find(l => l.fullName === learner.name)?.status !== 'Active' && 'opacity-50')}>
+                <div className="w-6 h-6 rounded-full bg-green-50 dark:bg-green-900/30 flex items-center justify-center">
+                  <Award size={14} className="text-green-600 dark:text-green-400" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm text-white font-medium">{learner.name}</p>
-                  <p className="text-xs text-slate-500">{learner.absences} absences · {learner.late} late</p>
+                  <p className="text-sm text-gray-900 dark:text-white font-medium">{learner.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{learner.absences} absences · {learner.late} late</p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-bold text-emerald-400">{learner.score}%</p>
-                  <p className="text-[10px] text-slate-500">Score</p>
+                  <p className="text-sm font-bold text-green-600 dark:text-green-400">{learner.score}%</p>
+                  <p className="text-[10px] text-gray-500 dark:text-gray-400">Score</p>
                 </div>
               </div>
             ))}
-            {mostPunctual.length === 0 && <p className="text-sm text-slate-500 text-center py-8">No attendance data available</p>}
+            {mostPunctual.length === 0 && <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-8">No attendance data available</p>}
           </div>
         </div>
       </div>

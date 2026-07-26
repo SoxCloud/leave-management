@@ -20,12 +20,12 @@ const PIE_COLORS = ['#6366f1', '#f59e0b', '#ef4444', '#8b5cf6', '#10b981'];
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (!active || !payload) return null;
   return (
-    <div className="bg-slate-900/95 backdrop-blur-md border border-slate-700/50 rounded-xl px-4 py-3 shadow-xl">
-      <p className="text-sm text-slate-400 mb-2">{label}</p>
+    <div className="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg px-3 py-2 shadow-lg">
+      <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">{label}</p>
       {payload.map((p: any, i: number) => (
         <p key={i} className="text-sm flex items-center gap-2" style={{ color: p.color }}>
           <span className="w-2 h-2 rounded-full" style={{ backgroundColor: p.color }} />
-          {p.name}: <span className="font-semibold text-white">{p.value}</span>
+          {p.name}: <span className="font-semibold text-gray-900 dark:text-white">{p.value}</span>
         </p>
       ))}
     </div>
@@ -74,19 +74,19 @@ const ExecutiveDashboard: React.FC = () => {
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-        <StatsCard title="Total Learners" value={stats.totalLearners} icon={<Users size={20} />} color="indigo" subtitle="All registered learners" />
-        <StatsCard title="Active Learners" value={stats.activeLearners} icon={<UserCheck size={20} />} color="emerald" subtitle="Currently active" />
-        <StatsCard title="Pending Requests" value={stats.pendingLeaveRequests} icon={<Clock size={20} />} color="amber" subtitle="Awaiting approval" />
-        <StatsCard title="Approved Today" value={stats.approvedLeaveToday} icon={<CalendarCheck size={20} />} color="blue" subtitle="Leave approved today" />
-        <StatsCard title="Annual Leave Used" value={stats.annualLeaveDaysUsed} icon={<CalendarDays size={20} />} color="purple" subtitle="Total days taken" />
-        <StatsCard title="Current Balance" value={stats.currentLeaveBalance} icon={<Wallet size={20} />} color="cyan" subtitle="Total leave balance" />
-        <StatsCard title="Absenteeism Rate" value={`${stats.absenteeismRate}%`} icon={<Activity size={20} />} color="rose" subtitle="Unauthorised absences" />
-        <StatsCard title="Avg Leave Balance" value={stats.averageLeaveBalance} icon={<BarChart3 size={20} />} color="indigo" subtitle="Per learner" />
+        <StatsCard title="Total Learners" value={stats.totalLearners} icon={<Users size={16} />} color="indigo" subtitle="All registered learners" />
+        <StatsCard title="Active Learners" value={stats.activeLearners} icon={<UserCheck size={16} />} color="emerald" subtitle="Currently active" />
+        <StatsCard title="Pending Requests" value={stats.pendingLeaveRequests} icon={<Clock size={16} />} color="amber" subtitle="Awaiting approval" />
+        <StatsCard title="Approved Today" value={stats.approvedLeaveToday} icon={<CalendarCheck size={16} />} color="blue" subtitle="Leave approved today" />
+        <StatsCard title="Annual Leave Used" value={stats.annualLeaveDaysUsed} icon={<CalendarDays size={16} />} color="purple" subtitle="Total days taken" />
+        <StatsCard title="Current Balance" value={stats.currentLeaveBalance} icon={<Wallet size={16} />} color="cyan" subtitle="Total leave balance" />
+        <StatsCard title="Absenteeism Rate" value={`${stats.absenteeismRate}%`} icon={<Activity size={16} />} color="rose" subtitle="Unauthorised absences" />
+        <StatsCard title="Avg Leave Balance" value={stats.averageLeaveBalance} icon={<BarChart3 size={16} />} color="indigo" subtitle="Per learner" />
 
-        <StatsCard title="Unauthorised" value={stats.unauthorisedAbsences} icon={<Ban size={20} />} color="rose" subtitle="No call no show / absent" />
-        <StatsCard title="Authorised" value={stats.authorisedAbsences} icon={<CheckCircle size={20} />} color="emerald" subtitle="Approved absences" />
-        <StatsCard title="Late Arrivals" value={stats.lateArrivals} icon={<Timer size={20} />} color="amber" subtitle="Total late arrivals" />
-        <StatsCard title="Today's Attendance" value={`${stats.todayAttendance.present}/${stats.todayAttendance.total}`} icon={<Activity size={20} />} color="blue" subtitle="Present today" />
+        <StatsCard title="Unauthorised" value={stats.unauthorisedAbsences} icon={<Ban size={16} />} color="rose" subtitle="No call no show / absent" />
+        <StatsCard title="Authorised" value={stats.authorisedAbsences} icon={<CheckCircle size={16} />} color="emerald" subtitle="Approved absences" />
+        <StatsCard title="Late Arrivals" value={stats.lateArrivals} icon={<Timer size={16} />} color="amber" subtitle="Total late arrivals" />
+        <StatsCard title="Today's Attendance" value={`${stats.todayAttendance.present}/${stats.todayAttendance.total}`} icon={<Activity size={16} />} color="blue" subtitle="Present today" />
       </div>
 
       {/* Reports Section */}
@@ -95,13 +95,13 @@ const ExecutiveDashboard: React.FC = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Monthly Leave Trends */}
-        <div className="rounded-2xl border border-slate-800/60 bg-linear-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm p-6">
-          <h3 className="text-sm font-semibold text-white mb-4">Monthly Leave Trends</h3>
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Monthly Leave Trends</h3>
           <ResponsiveContainer width="100%" height={280}>
             <LineChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="month" stroke="#64748b" tick={{ fontSize: 11 }} />
-              <YAxis stroke="#64748b" tick={{ fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+              <XAxis dataKey="month" stroke="#9CA3AF" tick={{ fontSize: 11 }} />
+              <YAxis stroke="#9CA3AF" tick={{ fontSize: 11 }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Line type="monotone" dataKey="annual" stroke="#6366f1" strokeWidth={2} dot={{ r: 3 }} name="Annual" />
@@ -113,8 +113,8 @@ const ExecutiveDashboard: React.FC = () => {
         </div>
 
         {/* Leave Type Distribution */}
-        <div className="rounded-2xl border border-slate-800/60 bg-linear-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm p-6">
-          <h3 className="text-sm font-semibold text-white mb-4">Leave Type Distribution</h3>
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Leave Type Distribution</h3>
           <ResponsiveContainer width="100%" height={280}>
             <PieChart>
               <Pie
@@ -140,13 +140,13 @@ const ExecutiveDashboard: React.FC = () => {
       {/* Second Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Department Comparison */}
-        <div className="rounded-2xl border border-slate-800/60 bg-linear-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm p-6">
-          <h3 className="text-sm font-semibold text-white mb-4">Department Comparison</h3>
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Department Comparison</h3>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={departmentChartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="name" stroke="#64748b" tick={{ fontSize: 10 }} />
-              <YAxis stroke="#64748b" tick={{ fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+              <XAxis dataKey="name" stroke="#9CA3AF" tick={{ fontSize: 10 }} />
+              <YAxis stroke="#9CA3AF" tick={{ fontSize: 11 }} />
               <Tooltip content={<CustomTooltip />} />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar dataKey="learners" fill="#6366f1" radius={[4, 4, 0, 0]} name="Learners" />
@@ -157,13 +157,13 @@ const ExecutiveDashboard: React.FC = () => {
         </div>
 
         {/* Absenteeism Trend */}
-        <div className="rounded-2xl border border-slate-800/60 bg-linear-to-br from-slate-900/80 to-slate-900/40 backdrop-blur-sm p-6">
-          <h3 className="text-sm font-semibold text-white mb-4">Absenteeism Trend</h3>
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Absenteeism Trend</h3>
           <ResponsiveContainer width="100%" height={280}>
             <AreaChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="month" stroke="#64748b" tick={{ fontSize: 11 }} />
-              <YAxis stroke="#64748b" tick={{ fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+              <XAxis dataKey="month" stroke="#9CA3AF" tick={{ fontSize: 11 }} />
+              <YAxis stroke="#9CA3AF" tick={{ fontSize: 11 }} />
               <Tooltip content={<CustomTooltip />} />
               <Area type="monotone" dataKey="total" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.15} strokeWidth={2} name="Total Leave" />
             </AreaChart>

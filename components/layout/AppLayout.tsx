@@ -29,7 +29,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
   }, []);
 
   return (
-    <div className="min-h-screen flex bg-[#0b1120] text-white">
+    <div className="min-h-screen flex bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white">
       {/* Desktop Sidebar */}
       <div className="hidden lg:block">
         <Sidebar
@@ -44,7 +44,7 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
       {/* Mobile Sidebar Overlay */}
       {mobileSidebarOpen && (
         <div className="fixed inset-0 z-40 lg:hidden">
-          <div className="absolute inset-0 bg-black/60" onClick={() => setMobileSidebarOpen(false)} />
+          <div className="absolute inset-0 bg-gray-900/30" onClick={() => setMobileSidebarOpen(false)} />
           <div className="absolute left-0 top-0 bottom-0">
             <Sidebar
               user={user!}
@@ -65,9 +65,9 @@ const AppLayout: React.FC<AppLayoutProps> = ({ children, title }) => {
           onMenuToggle={() => setMobileSidebarOpen(true)}
         />
 
-        <main className="flex-1 p-3 sm:p-4 md:p-6 overflow-y-auto">
+        <main className="flex-1 p-6 overflow-y-auto">
           <div className={clsx(
-            'max-w-[1600px] mx-auto space-y-4 sm:space-y-6'
+            'max-w-[1600px] mx-auto space-y-6'
           )}>
             {children}
           </div>

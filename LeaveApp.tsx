@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './context/ToastContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { AppProvider, useApp } from './context/AppContext';
 import AppLayout from './components/layout/AppLayout';
 import ExecutiveDashboard from './components/dashboard/ExecutiveDashboard';
@@ -12,11 +13,15 @@ import AttendanceTracker from './components/attendance/AttendanceTracker';
 import AbsenteeismReport from './components/attendance/AbsenteeismReport';
 import AnalyticsDashboard from './components/analytics/AnalyticsDashboard';
 import CompanySettings from './components/settings/CompanySettings';
+import Login from './components/auth/Login';
 import { RefreshCw } from 'lucide-react';
 
 const LeaveManagementApp: React.FC = () => {
+  const { user } = useAuth();
   const { loading, activeTab, setActiveTab } = useApp();
   const [selectedLearnerId, setSelectedLearnerId] = useState<string | null>(null);
+
+  if (!user) return <Login />;
 
   const getTitle = () => {
     const titles: Record<string, string> = {
@@ -29,9 +34,9 @@ const LeaveManagementApp: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="h-screen flex flex-col items-center justify-center bg-[#0b1120]">
+      <div className="h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900">
         <RefreshCw className="animate-spin mb-4 text-indigo-500" size={32} />
-        <p className="text-xs text-indigo-400 font-medium tracking-widest animate-pulse">LOADING LEAVEHUB...</p>
+        <p className="text-xs text-indigo-500 font-medium tracking-widest animate-pulse">LOADING LEAVEHUB...</p>
       </div>
     );
   }
@@ -64,9 +69,11 @@ const LeaveAppWrapper: React.FC = () => {
   return (
     <ThemeProvider>
       <ToastProvider>
-        <AppProvider>
-          <LeaveManagementApp />
-        </AppProvider>
+        <AuthProvider>
+          <AppProvider>
+            <LeaveManagementApp />
+          </AppProvider>
+        </AuthProvider>
       </ToastProvider>
     </ThemeProvider>
   );

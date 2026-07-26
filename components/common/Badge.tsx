@@ -23,8 +23,8 @@ const Badge: React.FC<BadgeProps> = ({ label, variant = 'default', size = 'sm', 
       className={clsx(
         'inline-flex items-center gap-1.5 font-medium rounded-full border whitespace-nowrap',
         variant === 'default' && badgeClass,
-        variant === 'outline' && 'border-slate-600 text-slate-300',
-        variant === 'subtle' && 'bg-slate-800/50 text-slate-400 border-transparent',
+        variant === 'outline' && 'border-gray-300 dark:border-gray-600 text-gray-500 dark:text-gray-400',
+        variant === 'subtle' && 'bg-gray-100 dark:bg-gray-800 text-gray-500 dark:text-gray-400 border-transparent',
         sizeClasses[size],
         className
       )}

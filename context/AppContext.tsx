@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
 import {
   Learner, LeaveRequest, LeaveBalance, AbsenteeismRecord, AppUser,
-  DashboardStats, ChartData, DepartmentData, FilterState, UserRole
+  DashboardStats, ChartData, DepartmentData, FilterState
 } from '../types';
 import {
   fetchDashboardStats, fetchChartData, fetchDepartmentData,
   LearnersService, LeaveRequestsService, LeaveBalancesService, AbsenteeismService
 } from '../services/googleSheets';
+import { useAuth } from './AuthContext';
 
 interface AppContextType {
   user: AppUser;
@@ -36,13 +37,7 @@ const AppContext = createContext<AppContextType>(null!);
 export const useApp = () => useContext(AppContext);
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-  const [user] = useState<AppUser>({
-    id: 'admin',
-    email: 'admin@leavehub.com',
-    name: 'System Admin',
-    role: UserRole.ADMIN,
-    avatarUrl: 'https://ui-avatars.com/api/?name=System+Admin&background=random',
-  });
+  const { user: authUser } = useAuth();
   const [learners, setLearners] = useState<Learner[]>([]);
   const [leaveRequests, setLeaveRequests] = useState<LeaveRequest[]>([]);
   const [leaveBalances, setLeaveBalances] = useState<LeaveBalance[]>([]);
@@ -87,7 +82,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AppContext.Provider value={{
-      user, learners, leaveRequests, leaveBalances, absenteeism,
+      user: authUser!, learners, leaveRequests, leaveBalances, absenteeism,
       dashboardStats, chartData, departmentData, filters, setFilters,
       loading, error, refresh, activeTab, setActiveTab,
     }}>

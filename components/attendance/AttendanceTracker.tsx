@@ -118,41 +118,41 @@ const AttendanceTracker: React.FC = () => {
     <div className="space-y-6">
       {/* Today's Summary */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="rounded-xl border border-slate-800/60 bg-slate-900/50 p-4">
-          <p className="text-xs text-slate-500 mb-1">Present Today</p>
-          <p className="text-2xl font-bold text-emerald-400">{presentToday}</p>
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Present Today</p>
+          <p className="text-2xl font-bold text-green-600 dark:text-green-400">{presentToday}</p>
         </div>
-        <div className="rounded-xl border border-slate-800/60 bg-slate-900/50 p-4">
-          <p className="text-xs text-slate-500 mb-1">Absent Today</p>
-          <p className="text-2xl font-bold text-red-400">{absentToday}</p>
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Absent Today</p>
+          <p className="text-2xl font-bold text-red-600 dark:text-red-400">{absentToday}</p>
         </div>
-        <div className="rounded-xl border border-slate-800/60 bg-slate-900/50 p-4">
-          <p className="text-xs text-slate-500 mb-1">Total Learners</p>
-          <p className="text-2xl font-bold text-white">{learners.length}</p>
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 shadow-sm">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">Total Learners</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{learners.length}</p>
         </div>
       </div>
 
       {/* Controls */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 className="text-lg font-bold text-white">Attendance for {formatDate(today)}</h2>
-          {todayIsSunday && <p className="text-xs text-amber-400 mt-1">Sunday — all learners default to Off</p>}
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white">Attendance for {formatDate(today)}</h2>
+          {todayIsSunday && <p className="text-xs text-amber-600 dark:text-amber-400 mt-1">Sunday — all learners default to Off</p>}
         </div>
         <div className="flex items-center gap-3">
           <div className="relative">
-            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500" />
             <input
               type="text"
               placeholder="Search learners..."
               value={filters.search}
               onChange={e => setFilters({ ...filters, search: e.target.value })}
-              className="w-56 pl-9 pr-4 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500/50"
+              className="w-56 pl-9 pr-4 py-2 bg-white border border-gray-300 rounded-md text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
             />
           </div>
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white rounded-xl text-sm font-medium transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white rounded-md text-sm font-medium shadow-sm transition-colors"
           >
             <Save size={16} />
             {saving ? 'Saving...' : 'Save All'}
@@ -164,33 +164,33 @@ const AttendanceTracker: React.FC = () => {
       {filteredLearners.length === 0 ? (
         <EmptyState title="No learners found" description="Try adjusting your search." />
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-slate-800/60">
+        <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg">
           <table className="w-full">
             <thead>
-              <tr className="bg-slate-800/50">
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">Learner</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">Status</th>
-                <th className="px-4 py-3 text-left text-xs font-semibold text-slate-400 uppercase">Authorised</th>
+              <tr className="bg-gray-50 dark:bg-gray-800">
+                <th className="px-4 py-2 text-left text-xs text-gray-500 dark:text-gray-400 uppercase">Learner</th>
+                <th className="px-4 py-2 text-left text-xs text-gray-500 dark:text-gray-400 uppercase">Status</th>
+                <th className="px-4 py-2 text-left text-xs text-gray-500 dark:text-gray-400 uppercase">Authorised</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-800/40">
+            <tbody className="divide-y divide-gray-100">
               {filteredLearners.map(learner => {
                 const row = rows.get(learner.fullName) || { status: todayIsSunday ? 'Off' as const : 'Present' as const, authorised: false };
                 const existing = todayRecords.find(r => r.learnerName === learner.fullName);
                 return (
-                  <tr key={learner.fullName} className={clsx('hover:bg-slate-800/30 transition-colors', learner.status !== 'Active' && 'opacity-50')}>
-                    <td className="px-4 py-3">
+                  <tr key={learner.fullName} className={clsx('hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors', learner.status !== 'Active' && 'opacity-50')}>
+                    <td className="px-4 py-2">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xs font-bold">
+                        <div className="w-8 h-8 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xs font-bold">
                           {learner.fullName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
                         </div>
                         <div>
-                          <p className="text-sm text-white font-medium">{learner.fullName}</p>
-                          <p className="text-xs text-slate-500">{learner.department}</p>
+                          <p className="text-sm text-gray-900 dark:text-white font-medium">{learner.fullName}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">{learner.department}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2">
                       <div className="flex items-center gap-2">
                         <select
                           value={row.status}
@@ -202,7 +202,7 @@ const AttendanceTracker: React.FC = () => {
                               authorised: status === 'Absent' || status === 'Leave' ? (current?.authorised ?? false) : false,
                             });
                           }}
-                          className="px-3 py-1.5 bg-slate-800/50 border border-slate-700/50 rounded-lg text-sm text-white focus:outline-none focus:border-indigo-500/50"
+                          className="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:border-indigo-500"
                         >
                           <option value="Present">Present</option>
                           <option value="Absent">Absent</option>
@@ -210,25 +210,25 @@ const AttendanceTracker: React.FC = () => {
                           <option value="Off">Off</option>
                         </select>
                         {existing && (
-                          <span className="text-[10px] text-slate-500 italic">(overwrite)</span>
+                          <span className="text-gray-400 italic text-xs">(overwrite)</span>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-2">
                       {row.status === 'Absent' || row.status === 'Leave' ? (
                         <button
                           onClick={() => setRow(learner.fullName, { ...row, authorised: !row.authorised })}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
                             row.authorised
-                              ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
-                              : 'bg-red-500/10 text-red-400 border-red-500/20'
+                              ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800'
+                              : 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800'
                           }`}
                         >
                           {row.authorised ? <CheckCircle size={14} /> : <XCircle size={14} />}
                           {row.authorised ? 'Authorised' : 'Unauthorised'}
                         </button>
                       ) : (
-                        <span className="text-sm text-slate-600">—</span>
+                        <span className="text-sm text-gray-300 dark:text-gray-500">—</span>
                       )}
                     </td>
                   </tr>

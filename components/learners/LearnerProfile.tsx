@@ -76,56 +76,56 @@ const LearnerProfile: React.FC<LearnerProfileProps> = ({ learnerName, onBack }) 
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center gap-4">
-        <button onClick={onBack} className="p-2 rounded-xl hover:bg-slate-800 text-slate-400 transition-colors">
+        <button onClick={onBack} className="p-2 rounded-xl hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 dark:text-gray-500 transition-colors">
           <ArrowLeft size={20} />
         </button>
-        <div className="w-16 h-16 rounded-full bg-gradient-to-br from-indigo-400 to-purple-500 flex items-center justify-center text-white text-xl font-bold">
+        <div className="w-16 h-16 rounded-full bg-indigo-500 flex items-center justify-center text-white text-xl font-bold">
           {getInitials(learner.fullName)}
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-3">
-            <h2 className="text-xl font-bold text-white">{learner.fullName}</h2>
+            <h2 className="text-xl font-bold text-gray-900 dark:text-white">{learner.fullName}</h2>
             <Badge label={learner.status} size="sm" />
           </div>
-          <p className="text-sm text-slate-400">{learner.email} · {learner.department} · {learner.campaign}</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400">{learner.email} · {learner.department} · {learner.campaign}</p>
         </div>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
         {[
-          { label: 'Annual Leave Accrued', value: accrued, icon: Calendar, color: 'text-blue-400', bg: 'bg-blue-500/10' },
-          { label: 'Total Days Taken', value: totalDaysTaken, icon: Clock, color: 'text-amber-400', bg: 'bg-amber-500/10' },
-          { label: 'Current Balance', value: balance, icon: Award, color: balance >= 0 ? 'text-emerald-400' : 'text-red-400', bg: balance >= 0 ? 'bg-emerald-500/10' : 'bg-red-500/10' },
-          { label: 'Absenteeism Rate', value: `${absenteeismRate}%`, icon: Activity, color: absenteeismRate <= 10 ? 'text-emerald-400' : 'text-red-400', bg: absenteeismRate <= 10 ? 'bg-emerald-500/10' : 'bg-red-500/10' },
-          { label: 'Sick Leave Taken', value: sickTaken, icon: FileText, color: 'text-purple-400', bg: 'bg-purple-500/10' },
-          { label: 'Family Resp. Taken', value: familyTaken, icon: Users, color: 'text-cyan-400', bg: 'bg-cyan-500/10' },
-          { label: 'Unpaid Leave Taken', value: unpaidTaken, icon: Ban, color: 'text-slate-400', bg: 'bg-slate-500/10' },
-          { label: 'No Call / Absent', value: noCallNoShowAbsent, icon: PhoneOff, color: 'text-rose-400', bg: 'bg-rose-500/10' },
-          { label: 'Unauthorised', value: unauthorised, icon: UserX, color: 'text-red-400', bg: 'bg-red-500/10' },
-          { label: 'Authorised', value: authorised, icon: UserCheck, color: 'text-emerald-400', bg: 'bg-emerald-500/10' },
-          { label: 'Late Arrivals', value: lateArrivals, icon: Sunset, color: 'text-amber-400', bg: 'bg-amber-500/10' },
-          { label: 'Attendance Rate', value: `${attendancePct}%`, icon: CheckCircle, color: attendancePct >= 90 ? 'text-emerald-400' : 'text-amber-400', bg: attendancePct >= 90 ? 'bg-emerald-500/10' : 'bg-amber-500/10' },
+          { label: 'Annual Leave Accrued', value: accrued, icon: Calendar, color: 'text-blue-600', bg: 'bg-blue-50' },
+          { label: 'Total Days Taken', value: totalDaysTaken, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
+          { label: 'Current Balance', value: balance, icon: Award, color: balance >= 0 ? 'text-green-600' : 'text-red-600', bg: balance >= 0 ? 'bg-green-50' : 'bg-red-50' },
+          { label: 'Absenteeism Rate', value: `${absenteeismRate}%`, icon: Activity, color: absenteeismRate <= 10 ? 'text-green-600' : 'text-red-600', bg: absenteeismRate <= 10 ? 'bg-green-50' : 'bg-red-50' },
+          { label: 'Sick Leave Taken', value: sickTaken, icon: FileText, color: 'text-indigo-600', bg: 'bg-indigo-50' },
+          { label: 'Family Resp. Taken', value: familyTaken, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
+          { label: 'Unpaid Leave Taken', value: unpaidTaken, icon: Ban, color: 'text-slate-600', bg: 'bg-slate-50' },
+          { label: 'No Call / Absent', value: noCallNoShowAbsent, icon: PhoneOff, color: 'text-red-600', bg: 'bg-red-50' },
+          { label: 'Unauthorised', value: unauthorised, icon: UserX, color: 'text-red-600', bg: 'bg-red-50' },
+          { label: 'Authorised', value: authorised, icon: UserCheck, color: 'text-green-600', bg: 'bg-green-50' },
+          { label: 'Late Arrivals', value: lateArrivals, icon: Sunset, color: 'text-amber-600', bg: 'bg-amber-50' },
+          { label: 'Attendance Rate', value: `${attendancePct}%`, icon: CheckCircle, color: attendancePct >= 90 ? 'text-green-600' : 'text-amber-600', bg: attendancePct >= 90 ? 'bg-green-50' : 'bg-amber-50' },
         ].map(stat => (
-          <div key={stat.label} className={`rounded-xl ${stat.bg} p-4`}>
+          <div key={stat.label} className={`rounded-lg ${stat.bg} p-4`}>
             <div className="flex items-center gap-2 mb-1">
               <stat.icon size={14} className={stat.color} />
-              <span className="text-xs text-slate-400">{stat.label}</span>
+              <span className="text-xs text-gray-500">{stat.label}</span>
             </div>
-            <p className="text-lg font-bold text-white">{stat.value}</p>
+            <p className="text-lg font-bold text-gray-900 dark:text-white">{stat.value}</p>
           </div>
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Leave Balance Chart */}
-        <div className="rounded-2xl bg-slate-800/60 p-5">
-          <h3 className="text-sm font-semibold text-white mb-4">Leave Balance</h3>
+        <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Leave Balance</h3>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={leaveChartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="name" stroke="#64748b" tick={{ fontSize: 11 }} />
-              <YAxis stroke="#64748b" tick={{ fontSize: 11 }} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+              <XAxis dataKey="name" stroke="#9CA3AF" tick={{ fontSize: 11 }} />
+              <YAxis stroke="#9CA3AF" tick={{ fontSize: 11 }} />
               <Tooltip />
               <Bar dataKey="days" radius={[6, 6, 0, 0]}>
                 {leaveChartData.map((_, i) => (
@@ -137,24 +137,24 @@ const LearnerProfile: React.FC<LearnerProfileProps> = ({ learnerName, onBack }) 
         </div>
 
         {/* Leave History */}
-        <div className="rounded-2xl bg-slate-800/60 p-5">
-          <h3 className="text-sm font-semibold text-white mb-4">Leave History</h3>
+        <div className="rounded-xl bg-white border border-gray-200 p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-gray-900 mb-4">Leave History</h3>
           <div className="space-y-2 max-h-[200px] overflow-y-auto">
             {learnerLeaves.length === 0 ? (
-              <p className="text-sm text-slate-500 text-center py-8">No leave requests yet</p>
+              <p className="text-sm text-gray-500 text-center py-8">No leave requests yet</p>
             ) : (
               learnerLeaves.slice(0, 10).map(lr => (
-                <div key={lr.id} className="flex items-center justify-between px-3 py-2 bg-slate-700/30 rounded-lg">
+                <div key={lr.id} className="flex items-center justify-between px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
                   <div className="flex items-center gap-2">
-                    {lr.status === LeaveStatus.APPROVED ? <CheckCircle size={14} className="text-emerald-400" /> :
-                     lr.status === LeaveStatus.REJECTED ? <XCircle size={14} className="text-red-400" /> :
-                     <AlertTriangle size={14} className="text-amber-400" />}
-                    <span className="text-sm text-slate-300">{lr.leaveType}</span>
+                    {lr.status === LeaveStatus.APPROVED ? <CheckCircle size={14} className="text-green-500 dark:text-green-400" /> :
+                     lr.status === LeaveStatus.REJECTED ? <XCircle size={14} className="text-red-500 dark:text-red-400" /> :
+                     <AlertTriangle size={14} className="text-amber-500 dark:text-amber-400" />}
+                    <span className="text-sm text-gray-700 dark:text-gray-300">{lr.leaveType}</span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className="text-xs text-slate-500">{formatDate(lr.startDate)}</span>
+                    <span className="text-xs text-gray-400">{formatDate(lr.startDate)}</span>
                     <Badge label={lr.status} size="sm" />
-                    <span className="text-xs text-slate-400">{lr.daysRequested}d</span>
+                    <span className="text-xs text-gray-400">{lr.daysRequested}d</span>
                   </div>
                 </div>
               ))
@@ -164,34 +164,34 @@ const LearnerProfile: React.FC<LearnerProfileProps> = ({ learnerName, onBack }) 
       </div>
 
       {/* Timeline */}
-      <div className="rounded-2xl bg-slate-800/60 p-5">
-        <h3 className="text-sm font-semibold text-white mb-4">Activity Timeline</h3>
+      <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Activity Timeline</h3>
         <div className="space-y-1 max-h-[300px] overflow-y-auto">
           {timeline.slice(0, 20).map((event, i) => (
             <div key={i} className="flex items-center gap-3 px-3 py-2">
               <div className={clsx(
                 'w-2 h-2 rounded-full',
-                event.type === 'leave' ? 'bg-indigo-400' : 'bg-amber-400'
+                event.type === 'leave' ? 'bg-indigo-500' : 'bg-amber-500'
               )} />
-              <span className="text-xs text-slate-500 w-24">{formatDate(event.date)}</span>
-              <span className="text-sm text-slate-300 capitalize">{event.desc.toLowerCase()}</span>
+              <span className="text-xs text-gray-400 dark:text-gray-500 w-24">{formatDate(event.date)}</span>
+              <span className="text-sm text-gray-700 dark:text-gray-300 capitalize">{event.desc.toLowerCase()}</span>
             </div>
           ))}
         </div>
       </div>
 
       {/* Progress Bar */}
-      <div className="rounded-2xl bg-slate-800/60 p-5">
+      <div className="rounded-xl bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 p-6 shadow-sm">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-sm text-slate-400">Learnership Progress</span>
-          <span className="text-sm font-semibold text-white">{progress}%</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400">Learnership Progress</span>
+          <span className="text-sm font-semibold text-gray-900 dark:text-white">{progress}%</span>
         </div>
-        <div className="h-3 bg-slate-700 rounded-full overflow-hidden">
-          <div className="h-full bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full transition-all" style={{ width: `${progress}%` }} />
+        <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
+          <div className="h-full bg-indigo-500 rounded-full transition-all" style={{ width: `${progress}%` }} />
         </div>
         <div className="flex justify-between mt-1.5">
-          <span className="text-xs text-slate-500">{formatDate(learner.startDate)}</span>
-          <span className="text-xs text-slate-500">{formatDate(learner.expectedEndDate)}</span>
+          <span className="text-xs text-gray-400 dark:text-gray-500">{formatDate(learner.startDate)}</span>
+          <span className="text-xs text-gray-400 dark:text-gray-500">{formatDate(learner.expectedEndDate)}</span>
         </div>
       </div>
     </div>

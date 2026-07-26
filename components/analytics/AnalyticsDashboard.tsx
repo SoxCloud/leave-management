@@ -71,45 +71,45 @@ const AnalyticsDashboard: React.FC = () => {
     <div className="space-y-6">
       {/* KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="rounded-xl border border-slate-800/60 bg-slate-900/50 p-4">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <Activity size={16} className="text-indigo-400" />
-            <span className="text-xs text-slate-500">Leave Utilization</span>
+            <Activity size={16} className="text-indigo-600 dark:text-indigo-400" />
+            <span className="text-xs text-gray-500 dark:text-gray-400">Leave Utilization</span>
           </div>
-          <p className="text-2xl font-bold text-indigo-400">{analytics.leaveUtilization}%</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{analytics.leaveUtilization}%</p>
         </div>
-        <div className="rounded-xl border border-slate-800/60 bg-slate-900/50 p-4">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <Percent size={16} className="text-emerald-400" />
-            <span className="text-xs text-slate-500">Attendance Rate</span>
+            <Percent size={16} className="text-green-600 dark:text-green-400" />
+            <span className="text-xs text-gray-500 dark:text-gray-400">Attendance Rate</span>
           </div>
-          <p className="text-2xl font-bold text-emerald-400">{analytics.attendanceRate}%</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{analytics.attendanceRate}%</p>
         </div>
-        <div className="rounded-xl border border-slate-800/60 bg-slate-900/50 p-4">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <BarChart3 size={16} className="text-amber-400" />
-            <span className="text-xs text-slate-500">Avg Leave / Learner</span>
+            <BarChart3 size={16} className="text-amber-600 dark:text-amber-400" />
+            <span className="text-xs text-gray-500 dark:text-gray-400">Avg Leave / Learner</span>
           </div>
-          <p className="text-2xl font-bold text-amber-400">{analytics.avgLeavePerLearner.toFixed(1)}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{analytics.avgLeavePerLearner.toFixed(1)}</p>
         </div>
-        <div className="rounded-xl border border-slate-800/60 bg-slate-900/50 p-4">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
           <div className="flex items-center gap-2 mb-2">
-            <Award size={16} className="text-purple-400" />
-            <span className="text-xs text-slate-500">Total Leave Days</span>
+            <Award size={16} className="text-indigo-600 dark:text-indigo-400" />
+            <span className="text-xs text-gray-500 dark:text-gray-400">Total Leave Days</span>
           </div>
-          <p className="text-2xl font-bold text-purple-400">{analytics.totalLeaveDays}</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{analytics.totalLeaveDays}</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Department Rankings */}
-        <div className="rounded-2xl border border-slate-800/60 bg-gradient-to-br from-slate-900/80 to-slate-900/40 p-5">
-          <h3 className="text-sm font-semibold text-white mb-4">Department Rankings</h3>
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Department Rankings</h3>
           <ResponsiveContainer width="100%" height={280}>
             <BarChart data={deptChartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" />
-              <XAxis dataKey="name" stroke="#64748b" tick={{ fontSize: 10 }} />
-              <YAxis stroke="#64748b" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+              <XAxis dataKey="name" stroke="#9ca3af" tick={{ fontSize: 10 }} />
+              <YAxis stroke="#9ca3af" />
               <Tooltip />
               <Legend wrapperStyle={{ fontSize: 11 }} />
               <Bar dataKey="learners" fill="#6366f1" radius={[4, 4, 0, 0]} name="Learners" />
@@ -120,31 +120,31 @@ const AnalyticsDashboard: React.FC = () => {
         </div>
 
         {/* Most vs Least Leave */}
-        <div className="rounded-2xl border border-slate-800/60 bg-gradient-to-br from-slate-900/80 to-slate-900/40 p-5">
-          <h3 className="text-sm font-semibold text-white mb-4">Most Leave Taken</h3>
-          <div className="space-y-2">
+        <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">Most Leave Taken</h3>
+          <div className="space-y-0">
             {analytics.mostLeave.map((l, i) => (
-              <div key={l.name} className={clsx('flex items-center gap-3 px-3 py-2 bg-slate-800/30 rounded-lg', learners.find(ln => ln.fullName === l.name)?.status !== 'Active' && 'opacity-50')}>
-                <span className="text-sm font-bold text-slate-500 w-6">{i + 1}</span>
+              <div key={l.name} className={clsx('flex items-center gap-3 px-3 py-2 border-b border-gray-100 dark:border-gray-800', learners.find(ln => ln.fullName === l.name)?.status !== 'Active' && 'opacity-50')}>
+                <span className="text-sm font-bold text-gray-400 dark:text-gray-500 w-6">{i + 1}</span>
                 <div className="flex-1">
-                  <p className="text-sm text-white font-medium">{l.name}</p>
-                  <p className="text-xs text-slate-500">{l.dept}</p>
+                  <p className="text-sm text-gray-900 dark:text-white font-medium">{l.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{l.dept}</p>
                 </div>
-                <span className="text-sm font-bold text-indigo-400">{l.taken}d</span>
+                <span className="text-sm font-bold text-indigo-600 dark:text-indigo-400">{l.taken}d</span>
               </div>
             ))}
           </div>
 
-          <h3 className="text-sm font-semibold text-white mb-3 mt-6">Least Leave Taken</h3>
-          <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3 mt-6">Least Leave Taken</h3>
+          <div className="space-y-0">
             {analytics.leastLeave.map((l, i) => (
-              <div key={l.name} className={clsx('flex items-center gap-3 px-3 py-2 bg-slate-800/30 rounded-lg', learners.find(ln => ln.fullName === l.name)?.status !== 'Active' && 'opacity-50')}>
-                <span className="text-sm font-bold text-slate-500 w-6">{i + 1}</span>
+              <div key={l.name} className={clsx('flex items-center gap-3 px-3 py-2 border-b border-gray-100 dark:border-gray-800', learners.find(ln => ln.fullName === l.name)?.status !== 'Active' && 'opacity-50')}>
+                <span className="text-sm font-bold text-gray-400 dark:text-gray-500 w-6">{i + 1}</span>
                 <div className="flex-1">
-                  <p className="text-sm text-white font-medium">{l.name}</p>
-                  <p className="text-xs text-slate-500">{l.dept}</p>
+                  <p className="text-sm text-gray-900 dark:text-white font-medium">{l.name}</p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">{l.dept}</p>
                 </div>
-                <span className="text-sm font-bold text-emerald-400">{l.taken}d</span>
+                <span className="text-sm font-bold text-green-600 dark:text-green-400">{l.taken}d</span>
               </div>
             ))}
           </div>

@@ -9,9 +9,9 @@ const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const TYPE_COLORS: Record<string, string> = {
   [LeaveType.ANNUAL]: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
   [LeaveType.SICK]: 'bg-red-500/20 text-red-300 border-red-500/30',
-  [LeaveType.FAMILY_RESPONSIBILITY]: 'bg-purple-500/20 text-purple-300 border-purple-500/30',
+  [LeaveType.FAMILY_RESPONSIBILITY]: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
   [LeaveType.UNPAID]: 'bg-amber-500/20 text-amber-300 border-amber-500/30',
-  [LeaveType.LEAVE]: 'bg-teal-500/20 text-teal-300 border-teal-500/30',
+  [LeaveType.LEAVE]: 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30',
   [LeaveType.OTHER]: 'bg-slate-500/20 text-slate-300 border-slate-500/30',
 };
 
@@ -51,21 +51,21 @@ const LeaveCalendar: React.FC = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <div className="lg:col-span-2 rounded-2xl border border-slate-800/60 bg-gradient-to-br from-slate-900/80 to-slate-900/40 p-5">
+        <div className="lg:col-span-2 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
         <div className="flex items-center justify-between mb-6">
-          <h3 className="text-sm font-semibold text-white">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white">
             {MONTHS[month]} {year}
           </h3>
           <div className="flex items-center gap-2">
-            <button onClick={prevMonth} className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400"><ChevronLeft size={16} /></button>
-            <button onClick={() => setCurrentDate(new Date())} className="px-2 py-1 text-xs text-slate-400 hover:text-white">Today</button>
-            <button onClick={nextMonth} className="p-1.5 rounded-lg hover:bg-slate-800 text-slate-400"><ChevronRight size={16} /></button>
+            <button onClick={prevMonth} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 dark:text-gray-500"><ChevronLeft size={16} /></button>
+            <button onClick={() => setCurrentDate(new Date())} className="px-2 py-1 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300">Today</button>
+            <button onClick={nextMonth} className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 dark:text-gray-500"><ChevronRight size={16} /></button>
           </div>
         </div>
 
         <div className="grid grid-cols-7 gap-1">
           {DAYS.map(d => (
-            <div key={d} className="text-center text-xs text-slate-500 font-medium py-2">{d}</div>
+            <div key={d} className="text-center text-xs text-gray-500 dark:text-gray-400 font-medium py-2">{d}</div>
           ))}
 
           {Array.from({ length: startDay }).map((_, i) => (
@@ -84,14 +84,14 @@ const LeaveCalendar: React.FC = () => {
                 key={day}
                 onClick={() => setSelectedDate(dateStr)}
                 className={clsx(
-                  'h-24 sm:h-28 p-1 rounded-lg border cursor-pointer transition-all overflow-hidden',
-                  isSelected ? 'border-indigo-500 bg-indigo-500/10' : 'border-slate-800/40 hover:border-slate-700/60',
-                  isToday && 'ring-1 ring-indigo-500/30'
+                  'h-24 sm:h-28 p-1.5 rounded-lg border cursor-pointer transition-all overflow-hidden',
+                  isSelected ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-900/30' : 'border-gray-100 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-600',
+                  isToday && 'ring-1 ring-indigo-500'
                 )}
               >
                 <span className={clsx(
                   'text-xs font-medium',
-                  isToday ? 'text-indigo-400' : 'text-slate-400'
+                  isToday ? 'text-indigo-600 dark:text-indigo-400' : 'text-gray-400 dark:text-gray-500'
                 )}>
                   {day}
                 </span>
@@ -105,7 +105,7 @@ const LeaveCalendar: React.FC = () => {
                     );
                   })}
                   {dayLeaves.length > 2 && (
-                    <span className="text-[10px] text-slate-500">+{dayLeaves.length - 2} more</span>
+                    <span className="text-[10px] text-gray-400 dark:text-gray-500">+{dayLeaves.length - 2} more</span>
                   )}
                 </div>
               </div>
@@ -115,23 +115,23 @@ const LeaveCalendar: React.FC = () => {
       </div>
 
       {/* Selected Date Details */}
-      <div className="rounded-2xl border border-slate-800/60 bg-gradient-to-br from-slate-900/80 to-slate-900/40 p-5">
-        <h3 className="text-sm font-semibold text-white mb-4">
+      <div className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm">
+        <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">
           {selectedDate ? formatDate(selectedDate) : 'Select a date'}
         </h3>
         {selectedLeaves.length === 0 ? (
-          <p className="text-sm text-slate-500 text-center py-8">No leave on this day</p>
+          <p className="text-sm text-gray-500 dark:text-gray-400 text-center py-8">No leave on this day</p>
         ) : (
           <div className="space-y-2">
             {selectedLeaves.map(lr => (
-              <div key={lr.id} className="px-3 py-2 bg-slate-800/30 rounded-lg">
+              <div key={lr.id} className="px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-lg">
                 <div className="flex items-center justify-between">
-                  <span className={clsx('text-sm font-medium', learners.find(l => l.fullName === lr.learnerName)?.status !== 'Active' ? 'text-slate-500' : 'text-white')}>{getLearnerName(lr.learnerName)}</span>
-                  <span className={clsx('text-[10px] px-1.5 py-0.5 rounded', lr.status === LeaveStatus.APPROVED ? 'bg-emerald-500/10 text-emerald-400' : 'bg-amber-500/10 text-amber-400')}>
+                  <span className={clsx('text-sm font-medium', learners.find(l => l.fullName === lr.learnerName)?.status !== 'Active' ? 'text-gray-500 dark:text-gray-400' : 'text-gray-900 dark:text-white')}>{getLearnerName(lr.learnerName)}</span>
+                  <span className={clsx('text-[10px] px-1.5 py-0.5 rounded', lr.status === LeaveStatus.APPROVED ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300' : 'bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-300')}>
                     {lr.status}
                   </span>
                 </div>
-                <span className="text-xs text-slate-400">{lr.leaveType}</span>
+                <span className="text-xs text-gray-500 dark:text-gray-400">{lr.leaveType}</span>
               </div>
             ))}
           </div>

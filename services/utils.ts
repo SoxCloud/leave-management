@@ -80,31 +80,15 @@ export function getStatusColor(status: string): string {
 export function getStatusBadgeClass(status: string): string {
   const color = getStatusColor(status);
   const classes: Record<string, string> = {
-    amber: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
-    emerald: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-    red: 'bg-red-500/10 text-red-400 border-red-500/20',
-    slate: 'bg-slate-500/10 text-slate-400 border-slate-500/20',
-    blue: 'bg-blue-500/10 text-blue-400 border-blue-500/20',
-    purple: 'bg-purple-500/10 text-purple-400 border-purple-500/20',
-    cyan: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
-    orange: 'bg-orange-500/10 text-orange-400 border-orange-500/20',
-    rose: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
-  };
-  return classes[color] || classes.slate;
-}
-
-export function getStatusBadgeClassLight(status: string): string {
-  const color = getStatusColor(status);
-  const classes: Record<string, string> = {
-    amber: 'bg-amber-100 text-amber-800 border-amber-200',
-    emerald: 'bg-emerald-100 text-emerald-800 border-emerald-200',
-    red: 'bg-red-100 text-red-800 border-red-200',
-    slate: 'bg-slate-100 text-slate-800 border-slate-200',
-    blue: 'bg-blue-100 text-blue-800 border-blue-200',
-    purple: 'bg-purple-100 text-purple-800 border-purple-200',
-    cyan: 'bg-cyan-100 text-cyan-800 border-cyan-200',
-    orange: 'bg-orange-100 text-orange-800 border-orange-200',
-    rose: 'bg-rose-100 text-rose-800 border-rose-200',
+    amber: 'bg-amber-100 dark:bg-amber-900/30 text-amber-800 dark:text-amber-300 border-amber-200 dark:border-amber-700',
+    emerald: 'bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-300 border-green-200 dark:border-green-700',
+    red: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-200 dark:border-red-700',
+    slate: 'bg-slate-100 dark:bg-slate-900/30 text-slate-800 dark:text-slate-300 border-slate-200 dark:border-slate-700',
+    blue: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
+    purple: 'bg-indigo-100 dark:bg-indigo-900/30 text-indigo-800 dark:text-indigo-300 border-indigo-200 dark:border-indigo-700',
+    cyan: 'bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 border-blue-200 dark:border-blue-700',
+    orange: 'bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-300 border-orange-200 dark:border-orange-700',
+    rose: 'bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-300 border-red-200 dark:border-red-700',
   };
   return classes[color] || classes.slate;
 }

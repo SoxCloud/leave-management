@@ -11,10 +11,10 @@ const icons = {
 };
 
 const colors = {
-  success: 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400',
-  error: 'bg-red-500/10 border-red-500/20 text-red-400',
-  warning: 'bg-amber-500/10 border-amber-500/20 text-amber-400',
-  info: 'bg-blue-500/10 border-blue-500/20 text-blue-400',
+  success: 'bg-green-50 dark:bg-green-900/30 border-green-200 dark:border-green-700 text-green-700 dark:text-green-300',
+  error: 'bg-red-50 dark:bg-red-900/30 border-red-200 dark:border-red-700 text-red-700 dark:text-red-300',
+  warning: 'bg-amber-50 dark:bg-amber-900/30 border-amber-200 dark:border-amber-700 text-amber-700 dark:text-amber-300',
+  info: 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-700 text-blue-700 dark:text-blue-300',
 };
 
 const ToastContainer: React.FC = () => {
@@ -23,13 +23,13 @@ const ToastContainer: React.FC = () => {
   if (notifications.length === 0) return null;
 
   return (
-    <div className="fixed top-4 right-4 z-[100] flex flex-col gap-2 max-w-sm">
+    <div className="fixed top-4 right-4 z-[100] flex flex-col gap-3 max-w-sm">
       {notifications.map(n => {
         const Icon = icons[n.type];
         return (
           <div
             key={n.id}
-            className={`flex items-start gap-3 px-4 py-3 rounded-xl border backdrop-blur-md shadow-lg animate-slide-up ${colors[n.type]}`}
+            className={`flex items-start gap-3 px-4 py-3 rounded-xl border shadow-lg animate-slide-up ${colors[n.type]}`}
           >
             <Icon size={20} className="shrink-0 mt-0.5" />
             <p className="text-sm flex-1">{n.message}</p>

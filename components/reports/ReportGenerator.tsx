@@ -48,21 +48,21 @@ const ReportGenerator: React.FC = () => {
         <select
           value={filters.search ? 'Individual Leave Report' : 'Monthly Leave Summary'}
           onChange={() => {}}
-          className="px-3 py-2 bg-slate-800/50 border border-slate-700/50 rounded-xl text-sm text-slate-300"
+          className="px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300"
         >
           {reportTypes.map(r => <option key={r}>{r}</option>)}
         </select>
 
         <div className="flex items-center gap-2 ml-auto">
-          <button onClick={handlePrint} className="flex items-center gap-2 px-3 py-2 bg-slate-800/50 hover:bg-slate-700/50 rounded-xl text-sm text-slate-300 transition-colors">
+          <button onClick={handlePrint} className="flex items-center gap-2 px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg text-sm transition-colors">
             <Printer size={16} />
             Print
           </button>
-          <button onClick={handleExportCSV} className="flex items-center gap-2 px-3 py-2 bg-slate-800/50 hover:bg-slate-700/50 rounded-xl text-sm text-slate-300 transition-colors">
+          <button onClick={handleExportCSV} className="flex items-center gap-2 px-3 py-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 rounded-lg text-sm transition-colors">
             <FileSpreadsheet size={16} />
             CSV
           </button>
-          <button onClick={handleExportCSV} className="flex items-center gap-2 px-3 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-sm font-medium transition-colors">
+          <button onClick={handleExportCSV} className="flex items-center gap-2 px-3 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-medium transition-colors">
             <Download size={16} />
             Export
           </button>
@@ -70,30 +70,30 @@ const ReportGenerator: React.FC = () => {
       </div>
 
       {/* Report Content */}
-      <div ref={reportRef} className="rounded-2xl border border-slate-800/60 bg-gradient-to-br from-slate-900/80 to-slate-900/40 p-6 space-y-6">
+      <div ref={reportRef} className="rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-6 shadow-sm space-y-6">
         {/* Header */}
-        <div className="text-center pb-6 border-b border-slate-800/60">
-          <h2 className="text-xl font-bold text-white">Leave Management Report</h2>
-          <p className="text-sm text-slate-400">Generated on {new Date().toLocaleDateString('en-ZA')}</p>
+        <div className="text-center pb-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Leave Management Report</h2>
+          <p className="text-sm text-gray-500 dark:text-gray-400">Generated on {new Date().toLocaleDateString('en-ZA')}</p>
         </div>
 
 
         {/* All Learners Report */}
         <div>
-          <h3 className="text-sm font-semibold text-white mb-3">Individual Leave Summary</h3>
-          <div className="overflow-x-auto rounded-lg border border-slate-800/40 max-h-96 overflow-y-auto">
+          <h3 className="text-sm font-semibold text-gray-900 dark:text-white mb-3">Individual Leave Summary</h3>
+          <div className="overflow-x-auto border border-gray-200 dark:border-gray-700 rounded-lg max-h-96 overflow-y-auto">
             <table className="w-full">
-              <thead className="sticky top-0 bg-slate-900">
-                <tr className="bg-slate-800/80">
-                  <th className="px-4 py-2 text-left text-xs text-slate-400 uppercase">Name</th>
-                  <th className="px-4 py-2 text-left text-xs text-slate-400 uppercase">Department</th>
-                  <th className="px-4 py-2 text-right text-xs text-slate-400 uppercase">Accrued</th>
-                  <th className="px-4 py-2 text-right text-xs text-slate-400 uppercase">Taken</th>
-                  <th className="px-4 py-2 text-right text-xs text-slate-400 uppercase">Balance</th>
-                  <th className="px-4 py-2 text-right text-xs text-slate-400 uppercase">Attendance</th>
+              <thead className="sticky top-0 bg-white dark:bg-gray-900">
+                <tr className="bg-gray-50 dark:bg-gray-800">
+                  <th className="px-4 py-2 text-left text-xs text-gray-500 dark:text-gray-400 uppercase">Name</th>
+                  <th className="px-4 py-2 text-left text-xs text-gray-500 dark:text-gray-400 uppercase">Department</th>
+                  <th className="px-4 py-2 text-right text-xs text-gray-500 dark:text-gray-400 uppercase">Accrued</th>
+                  <th className="px-4 py-2 text-right text-xs text-gray-500 dark:text-gray-400 uppercase">Taken</th>
+                  <th className="px-4 py-2 text-right text-xs text-gray-500 dark:text-gray-400 uppercase">Balance</th>
+                  <th className="px-4 py-2 text-right text-xs text-gray-500 dark:text-gray-400 uppercase">Attendance</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-800/40">
+              <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                 {learners.map(l => {
                   const taken = leaveRequests
                     .filter(lr => lr.learnerName === l.fullName && lr.leaveType === LeaveType.ANNUAL && lr.status === LeaveStatus.APPROVED)
@@ -106,13 +106,13 @@ const ReportGenerator: React.FC = () => {
                     : 100;
                   return (
                     <tr key={l.fullName} className={l.status !== 'Active' ? 'opacity-50' : ''}>
-                      <td className="px-4 py-2 text-sm text-white">{l.fullName}</td>
-                      <td className="px-4 py-2 text-sm text-slate-300">{l.department}</td>
-                      <td className="px-4 py-2 text-sm text-slate-300 text-right">{accrued}</td>
-                      <td className="px-4 py-2 text-sm text-slate-300 text-right">{taken}</td>
-                      <td className="px-4 py-2 text-sm text-slate-300 text-right">{balance}</td>
+                      <td className="px-4 py-2 text-sm text-gray-900 dark:text-white">{l.fullName}</td>
+                      <td className="px-4 py-2 text-sm text-gray-500 dark:text-gray-400">{l.department}</td>
+                      <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 text-right">{accrued}</td>
+                      <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 text-right">{taken}</td>
+                      <td className="px-4 py-2 text-sm text-gray-700 dark:text-gray-300 text-right">{balance}</td>
                       <td className="px-4 py-2 text-sm text-right">
-                        <span className={attPct >= 90 ? 'text-emerald-400' : attPct >= 75 ? 'text-amber-400' : 'text-red-400'}>{attPct}%</span>
+                        <span className={attPct >= 90 ? 'text-green-600 dark:text-green-400' : attPct >= 75 ? 'text-amber-600 dark:text-amber-400' : 'text-red-600 dark:text-red-400'}>{attPct}%</span>
                       </td>
                     </tr>
                   );
