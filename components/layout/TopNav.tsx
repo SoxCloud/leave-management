@@ -1,9 +1,10 @@
-import React from 'react';
-import { Search, Bell, Menu, Moon, Sun, LogOut } from 'lucide-react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { Search, Bell, Menu, Moon, Sun, LogOut, X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { getInitials } from '../../services/utils';
+import { clsx, getInitials, formatDate } from '../../services/utils';
+import { LeaveStatus, AttendanceStatus } from '../../types';
 
 interface TopNavProps {
   title: string;
@@ -14,9 +15,45 @@ interface TopNavProps {
 }
 
 const TopNav: React.FC<TopNavProps> = ({ title, searchQuery, onSearchChange, onMenuToggle, children }) => {
-  const { user } = useApp();
+  const { user, leaveRequests, absenteeism } = useApp();
   const { logout } = useAuth();
   const { darkMode, toggleDarkMode } = useTheme();
+  const [notifOpen, setNotifOpen] = useState(false);
+  const notifRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const today = new Date().toISOString().split('T')[0];
+
+  const notifications = useMemo(() => {
+    const items: { id: string; type: 'warning' | 'error' | 'info'; message: string; time: string }[] = [];
+
+    const pending = leaveRequests.filter(lr => lr.status === LeaveStatus.PENDING);
+    pending.forEach(lr => {
+      items.push({ id: lr.id, type: 'warning', message: `${lr.learnerName} requested ${lr.leaveType.toLowerCase()} leave`, time: lr.startDate });
+    });
+
+    const lateToday = absenteeism.filter(a => a.date === today && a.attendanceStatus === AttendanceStatus.LATE);
+    lateToday.forEach(a => {
+      items.push({ id: a.id + '-late', type: 'error', message: `${a.learnerName} arrived late today`, time: today });
+    });
+
+    const absentToday = absenteeism.filter(a => a.date === today && (a.attendanceStatus === AttendanceStatus.ABSENT || a.attendanceStatus === AttendanceStatus.NO_CALL_NO_SHOW));
+    absentToday.forEach(a => {
+      items.push({ id: a.id + '-absent', type: 'error', message: `${a.learnerName} is absent today`, time: today });
+    });
+
+    items.sort((a, b) => b.time.localeCompare(a.time));
+    return items;
+  }, [leaveRequests, absenteeism, today]);
 
   return (
     <div className="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
@@ -44,10 +81,47 @@ const TopNav: React.FC<TopNavProps> = ({ title, searchQuery, onSearchChange, onM
             {darkMode ? <Sun size={16} /> : <Moon size={16} />}
           </button>
 
-          <button className="relative p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 transition-colors">
-            <Bell size={16} />
-            <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-red-500" />
-          </button>
+          <div className="relative" ref={notifRef}>
+            <button onClick={() => setNotifOpen(!notifOpen)} className="relative p-1.5 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 transition-colors">
+              <Bell size={16} />
+              {notifications.length > 0 && (
+                <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full bg-red-500 text-white text-[9px] font-bold flex items-center justify-center">
+                  {notifications.length > 9 ? '9+' : notifications.length}
+                </span>
+              )}
+            </button>
+
+            {notifOpen && (
+              <div className="absolute right-0 top-full mt-2 w-80 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg overflow-hidden z-50">
+                <div className="flex items-center justify-between px-4 py-2.5 border-b border-gray-100 dark:border-gray-800">
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">Notifications</span>
+                  <button onClick={() => setNotifOpen(false)} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
+                    <X size={14} />
+                  </button>
+                </div>
+                <div className="max-h-80 overflow-y-auto">
+                  {notifications.length === 0 ? (
+                    <div className="px-4 py-8 text-center text-sm text-gray-400 dark:text-gray-500">No notifications</div>
+                  ) : (
+                    notifications.map(n => (
+                      <div key={n.id} className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-50 dark:border-gray-800 last:border-0">
+                        <span className={clsx(
+                          'w-2 h-2 rounded-full mt-1.5 shrink-0',
+                          n.type === 'warning' && 'bg-amber-400',
+                          n.type === 'error' && 'bg-red-400',
+                          n.type === 'info' && 'bg-blue-400'
+                        )} />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm text-gray-700 dark:text-gray-300">{n.message}</p>
+                          <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{formatDate(n.time)}</p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
 
           {children}
 
