@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   LayoutDashboard, Users, CalendarCheck, ClipboardList, Timer,
-  BarChart3, Settings, ChevronLeft
+  BarChart3, Settings, ChevronLeft, ChevronRight
 } from 'lucide-react';
 import { clsx, getInitials } from '../../services/utils';
 import { AppUser } from '../../types';
@@ -35,8 +35,8 @@ const Sidebar: React.FC<SidebarProps> = ({ user, activeTab, setActiveTab, collap
           LM
         </div>
         {!collapsed && <span className="text-gray-900 dark:text-white font-semibold text-base">LeaveHub</span>}
-        <button onClick={onToggleCollapse} className={clsx('p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-300 dark:text-gray-500 transition-colors', collapsed && 'hidden')}>
-          <ChevronLeft size={14} />
+        <button onClick={onToggleCollapse} className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-300 dark:text-gray-500 transition-colors">
+          {collapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
         </button>
       </div>
 
