@@ -97,7 +97,7 @@ const LearnerProfile: React.FC<LearnerProfileProps> = ({ learnerName, onBack }) 
         <StatsCard title="Annual Leave Accrued" value={accrued} icon={<Calendar size={14} />} subtitle="days" />
         <StatsCard title="Total Days Taken" value={totalDaysTaken} icon={<Clock size={14} />} subtitle="days" />
         <StatsCard title="Current Balance" value={balance} icon={<Award size={14} />} accent={balance >= 0 ? 'positive' : 'negative'} subtitle="days remaining" />
-        <StatsCard title="Absenteeism Rate" value={`${absenteeismRate}%`} icon={<Activity size={14} />} accent={absenteeismRate > 10 ? 'negative' : 'positive'} progress={absenteeismRate} subtitle="of attendance records" />
+        <StatsCard title="Absenteeism Rate" value={`${absenteeismRate}%`} icon={<Activity size={14} />} accent={absenteeismRate > 10 ? 'negative' : 'positive'} subtitle="of attendance records" />
         <StatsCard title="Sick Leave Taken" value={sickTaken} icon={<FileText size={14} />} subtitle="days" />
         <StatsCard title="Family Resp. Taken" value={familyTaken} icon={<Users size={14} />} subtitle="days" />
         <StatsCard title="Unpaid Leave Taken" value={unpaidTaken} icon={<Ban size={14} />} subtitle="days" />
@@ -105,7 +105,7 @@ const LearnerProfile: React.FC<LearnerProfileProps> = ({ learnerName, onBack }) 
         <StatsCard title="Unauthorised" value={unauthorised} icon={<UserX size={14} />} accent="negative" subtitle="absences" />
         <StatsCard title="Authorised" value={authorised} icon={<UserCheck size={14} />} accent="positive" subtitle="absences" />
         <StatsCard title="Late Arrivals" value={lateArrivals} icon={<Sunset size={14} />} accent={lateArrivals > 0 ? 'negative' : 'positive'} subtitle="occurrences" />
-        <StatsCard title="Attendance Rate" value={`${attendancePct}%`} icon={<CheckCircle size={14} />} accent={attendancePct >= 90 ? 'positive' : 'negative'} progress={attendancePct} subtitle="overall" />
+        <StatsCard title="Attendance Rate" value={`${attendancePct}%`} icon={<CheckCircle size={14} />} accent={attendancePct >= 90 ? 'positive' : 'negative'} subtitle="overall" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

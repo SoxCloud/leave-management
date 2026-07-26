@@ -9,7 +9,6 @@ interface StatsCardProps {
   trend?: { value: number; isUp: boolean };
   subtitle?: string;
   onClick?: () => void;
-  progress?: number;
   accent?: 'default' | 'positive' | 'negative';
 }
 
@@ -19,7 +18,7 @@ const accentNumber: Record<string, string> = {
   negative: 'text-[#EF4444]',
 };
 
-const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon, trend, subtitle, onClick, progress, accent = 'default' }) => {
+const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon, trend, subtitle, onClick, accent = 'default' }) => {
   return (
     <div
       onClick={onClick}
@@ -45,14 +44,6 @@ const StatsCard: React.FC<StatsCardProps> = ({ title, value, icon, trend, subtit
             </span>
           )}
         </div>
-        {progress !== undefined && (
-          <div className="mt-2 w-full h-1 bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-            <div
-              className={clsx('h-full rounded-full transition-all', accent === 'positive' ? 'bg-[#22C55E]' : accent === 'negative' ? 'bg-[#EF4444]' : 'bg-indigo-500')}
-              style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
-            />
-          </div>
-        )}
         {subtitle && <p className="text-xs text-gray-400 dark:text-gray-500 mt-1.5">{subtitle}</p>}
       </div>
     </div>

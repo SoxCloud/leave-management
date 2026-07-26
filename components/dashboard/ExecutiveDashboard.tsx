@@ -75,17 +75,17 @@ const ExecutiveDashboard: React.FC = () => {
       {/* Stats Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
         <StatsCard title="Total Learners" value={stats.totalLearners} icon={<Users size={16} />} subtitle="All registered learners" />
-        <StatsCard title="Active Learners" value={stats.activeLearners} icon={<UserCheck size={16} />} progress={stats.totalLearners > 0 ? Math.round(stats.activeLearners / stats.totalLearners * 100) : 0} accent="positive" subtitle="Currently active" />
+        <StatsCard title="Active Learners" value={stats.activeLearners} icon={<UserCheck size={16} />} accent="positive" subtitle="Currently active" />
         <StatsCard title="Pending Requests" value={stats.pendingLeaveRequests} icon={<Clock size={16} />} accent={stats.pendingLeaveRequests > 0 ? 'negative' : 'positive'} subtitle="Awaiting approval" />
         <StatsCard title="Approved Today" value={stats.approvedLeaveToday} icon={<CalendarCheck size={16} />} accent={stats.approvedLeaveToday > 0 ? 'positive' : 'default'} subtitle="Leave approved today" />
         <StatsCard title="Annual Leave Used" value={stats.annualLeaveDaysUsed} icon={<CalendarDays size={16} />} subtitle="Total days taken" />
         <StatsCard title="Current Balance" value={stats.currentLeaveBalance} icon={<Wallet size={16} />} subtitle="Total leave balance" />
-        <StatsCard title="Absenteeism Rate" value={`${stats.absenteeismRate}%`} icon={<Activity size={16} />} accent={stats.absenteeismRate > 5 ? 'negative' : 'positive'} progress={Math.min(stats.absenteeismRate, 100)} subtitle="Unauthorised absences" />
+        <StatsCard title="Absenteeism Rate" value={`${stats.absenteeismRate}%`} icon={<Activity size={16} />} accent={stats.absenteeismRate > 5 ? 'negative' : 'positive'} subtitle="Unauthorised absences" />
         <StatsCard title="Avg Leave Balance" value={stats.averageLeaveBalance} icon={<BarChart3 size={16} />} subtitle="Per learner" />
         <StatsCard title="Unauthorised" value={stats.unauthorisedAbsences} icon={<Ban size={16} />} accent="negative" subtitle="No call no show / absent" />
         <StatsCard title="Authorised" value={stats.authorisedAbsences} icon={<CheckCircle size={16} />} accent="positive" subtitle="Approved absences" />
         <StatsCard title="Late Arrivals" value={stats.lateArrivals} icon={<Timer size={16} />} accent={stats.lateArrivals > 0 ? 'negative' : 'positive'} subtitle="Total late arrivals" />
-        <StatsCard title="Today's Attendance" value={`${stats.todayAttendance.present}/${stats.todayAttendance.total}`} icon={<Activity size={16} />} progress={stats.todayAttendance.total > 0 ? Math.round(stats.todayAttendance.present / stats.todayAttendance.total * 100) : 0} accent={stats.todayAttendance.present / stats.todayAttendance.total >= 0.8 ? 'positive' : 'negative'} subtitle="Present today" />
+        <StatsCard title="Today's Attendance" value={`${stats.todayAttendance.present}/${stats.todayAttendance.total}`} icon={<Activity size={16} />} accent={stats.todayAttendance.present / stats.todayAttendance.total >= 0.8 ? 'positive' : 'negative'} subtitle="Present today" />
       </div>
 
       {/* Reports Section */}
