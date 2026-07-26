@@ -299,7 +299,7 @@ const LeaveRequests: React.FC = () => {
                 ['End Date', formatDate(selectedRequest.endDate)],
                 ['Days Requested', `${selectedRequest.daysRequested}`],
                 ['Correct Days', `${getWorkingDays(selectedRequest.startDate, selectedRequest.endDate)}`],
-                ['Medical Certificate', selectedRequest.medicalCertificate ? 'Yes' : 'No'],
+                ['Supporting Document', selectedRequest.medicalCertificate ? 'Yes' : 'No'],
                 ['Approved By', selectedRequest.approvedBy || '-'],
                 ['Approval Date', selectedRequest.approvalDate ? formatDate(selectedRequest.approvalDate) : '-'],
               ].map(([label, value]) => (
@@ -371,8 +371,8 @@ const LeaveRequests: React.FC = () => {
             <textarea rows={3} value={formData.reason} onChange={e => handleNewChange('reason', e.target.value)} className="w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-900 dark:text-white text-sm" />
           </div>
           <div className="flex items-center gap-2">
-            <input type="checkbox" id="medicalCert" checked={formData.medicalCertificate} onChange={e => handleNewChange('medicalCertificate', e.target.checked)} className="rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600" />
-            <label htmlFor="medicalCert" className="text-sm text-gray-700 dark:text-gray-300">Medical Certificate Attached</label>
+            <input type="checkbox" id="supportingDoc" checked={formData.medicalCertificate} onChange={e => handleNewChange('medicalCertificate', e.target.checked)} className="rounded bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600" />
+            <label htmlFor="supportingDoc" className="text-sm text-gray-700 dark:text-gray-300">Supporting Document Attached</label>
           </div>
         </div>
         <div className="flex justify-end gap-3 mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
