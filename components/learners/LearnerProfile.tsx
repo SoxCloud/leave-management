@@ -6,10 +6,11 @@ import {
 } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import Badge from '../common/Badge';
+import StatsCard from '../common/StatsCard';
 import LoadingSkeleton from '../common/LoadingSkeleton';
 import EmptyState from '../common/EmptyState';
 import {
-  clsx, formatDate, getInitials, getStatusColor
+  clsx, formatDate, getInitials
 } from '../../services/utils';
 import {
   calculateAccruedDays, calculateLeaveBalance, calculateAttendancePercentage,
@@ -93,28 +94,18 @@ const LearnerProfile: React.FC<LearnerProfileProps> = ({ learnerName, onBack }) 
 
       {/* Stats Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-        {[
-          { label: 'Annual Leave Accrued', value: accrued, icon: Calendar, color: 'text-blue-600', bg: 'bg-blue-50' },
-          { label: 'Total Days Taken', value: totalDaysTaken, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-50' },
-          { label: 'Current Balance', value: balance, icon: Award, color: balance >= 0 ? 'text-green-600' : 'text-red-600', bg: balance >= 0 ? 'bg-green-50' : 'bg-red-50' },
-          { label: 'Absenteeism Rate', value: `${absenteeismRate}%`, icon: Activity, color: absenteeismRate <= 10 ? 'text-green-600' : 'text-red-600', bg: absenteeismRate <= 10 ? 'bg-green-50' : 'bg-red-50' },
-          { label: 'Sick Leave Taken', value: sickTaken, icon: FileText, color: 'text-indigo-600', bg: 'bg-indigo-50' },
-          { label: 'Family Resp. Taken', value: familyTaken, icon: Users, color: 'text-blue-600', bg: 'bg-blue-50' },
-          { label: 'Unpaid Leave Taken', value: unpaidTaken, icon: Ban, color: 'text-slate-600', bg: 'bg-slate-50' },
-          { label: 'No Call / Absent', value: noCallNoShowAbsent, icon: PhoneOff, color: 'text-red-600', bg: 'bg-red-50' },
-          { label: 'Unauthorised', value: unauthorised, icon: UserX, color: 'text-red-600', bg: 'bg-red-50' },
-          { label: 'Authorised', value: authorised, icon: UserCheck, color: 'text-green-600', bg: 'bg-green-50' },
-          { label: 'Late Arrivals', value: lateArrivals, icon: Sunset, color: 'text-amber-600', bg: 'bg-amber-50' },
-          { label: 'Attendance Rate', value: `${attendancePct}%`, icon: CheckCircle, color: attendancePct >= 90 ? 'text-green-600' : 'text-amber-600', bg: attendancePct >= 90 ? 'bg-green-50' : 'bg-amber-50' },
-        ].map(stat => (
-          <div key={stat.label} className={`rounded-lg ${stat.bg} p-4`}>
-            <div className="flex items-center gap-2 mb-1">
-              <stat.icon size={14} className={stat.color} />
-              <span className="text-xs text-gray-500">{stat.label}</span>
-            </div>
-            <p className="text-lg font-bold text-gray-900 dark:text-white">{stat.value}</p>
-          </div>
-        ))}
+        <StatsCard title="Annual Leave Accrued" value={accrued} icon={<Calendar size={14} />} subtitle="days" />
+        <StatsCard title="Total Days Taken" value={totalDaysTaken} icon={<Clock size={14} />} subtitle="days" />
+        <StatsCard title="Current Balance" value={balance} icon={<Award size={14} />} accent={balance >= 0 ? 'positive' : 'negative'} subtitle="days remaining" />
+        <StatsCard title="Absenteeism Rate" value={`${absenteeismRate}%`} icon={<Activity size={14} />} accent={absenteeismRate > 10 ? 'negative' : 'positive'} progress={absenteeismRate} subtitle="of attendance records" />
+        <StatsCard title="Sick Leave Taken" value={sickTaken} icon={<FileText size={14} />} subtitle="days" />
+        <StatsCard title="Family Resp. Taken" value={familyTaken} icon={<Users size={14} />} subtitle="days" />
+        <StatsCard title="Unpaid Leave Taken" value={unpaidTaken} icon={<Ban size={14} />} subtitle="days" />
+        <StatsCard title="No Call / Absent" value={noCallNoShowAbsent} icon={<PhoneOff size={14} />} accent="negative" subtitle="occurrences" />
+        <StatsCard title="Unauthorised" value={unauthorised} icon={<UserX size={14} />} accent="negative" subtitle="absences" />
+        <StatsCard title="Authorised" value={authorised} icon={<UserCheck size={14} />} accent="positive" subtitle="absences" />
+        <StatsCard title="Late Arrivals" value={lateArrivals} icon={<Sunset size={14} />} accent={lateArrivals > 0 ? 'negative' : 'positive'} subtitle="occurrences" />
+        <StatsCard title="Attendance Rate" value={`${attendancePct}%`} icon={<CheckCircle size={14} />} accent={attendancePct >= 90 ? 'positive' : 'negative'} progress={attendancePct} subtitle="overall" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
