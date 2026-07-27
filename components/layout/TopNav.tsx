@@ -19,6 +19,7 @@ const TopNav: React.FC<TopNavProps> = ({ title, searchQuery, onSearchChange, onM
   const { logout } = useAuth();
   const { darkMode, toggleDarkMode } = useTheme();
   const [notifOpen, setNotifOpen] = useState(false);
+  const [dismissed, setDismissed] = useState<Set<string>>(new Set());
   const notifRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -52,8 +53,17 @@ const TopNav: React.FC<TopNavProps> = ({ title, searchQuery, onSearchChange, onM
     });
 
     items.sort((a, b) => b.time.localeCompare(a.time));
-    return items;
-  }, [leaveRequests, absenteeism, today]);
+    return items.filter(n => !dismissed.has(n.id));
+  }, [leaveRequests, absenteeism, today, dismissed]);
+
+  const dismissNotification = (id: string) => {
+    setDismissed(prev => new Set(prev).add(id));
+  };
+
+  const dismissAll = () => {
+    setDismissed(prev => new Set([...prev, ...notifications.map(n => n.id)]));
+    setNotifOpen(false);
+  };
 
   return (
     <div className="sticky top-0 z-30 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
@@ -104,7 +114,11 @@ const TopNav: React.FC<TopNavProps> = ({ title, searchQuery, onSearchChange, onM
                     <div className="px-4 py-8 text-center text-sm text-gray-400 dark:text-gray-500">No notifications</div>
                   ) : (
                     notifications.map(n => (
-                      <div key={n.id} className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-50 dark:border-gray-800 last:border-0">
+                      <button
+                        key={n.id}
+                        onClick={() => dismissNotification(n.id)}
+                        className="w-full text-left flex items-start gap-3 px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-b border-gray-50 dark:border-gray-800 last:border-0"
+                      >
                         <span className={clsx(
                           'w-2 h-2 rounded-full mt-1.5 shrink-0',
                           n.type === 'warning' && 'bg-amber-400',
@@ -115,8 +129,13 @@ const TopNav: React.FC<TopNavProps> = ({ title, searchQuery, onSearchChange, onM
                           <p className="text-sm text-gray-700 dark:text-gray-300">{n.message}</p>
                           <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{formatDate(n.time)}</p>
                         </div>
-                      </div>
+                      </button>
                     ))
+                  )}
+                  {notifications.length > 0 && (
+                    <button onClick={dismissAll} className="w-full px-4 py-2 text-xs text-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors border-t border-gray-100 dark:border-gray-800">
+                      Clear all
+                    </button>
                   )}
                 </div>
               </div>
