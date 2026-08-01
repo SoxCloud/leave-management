@@ -56,7 +56,16 @@ export function getSouthAfricanHolidays(year: number): Date[] {
   holidays.push(new Date(easter.getFullYear(), easter.getMonth(), easter.getDate() - 2)); // Good Friday
   holidays.push(new Date(easter.getFullYear(), easter.getMonth(), easter.getDate() + 1)); // Family Day (Easter Monday)
 
-  return holidays;
+  // When a public holiday falls on a Sunday, the following Monday is observed as a public holiday.
+  // Learners then get both the Sunday (weekend) and the substituted Monday excluded.
+  const observed: Date[] = [];
+  for (const h of holidays) {
+    if (h.getDay() === 0) {
+      observed.push(new Date(h.getFullYear(), h.getMonth(), h.getDate() + 1));
+    }
+  }
+
+  return [...holidays, ...observed];
 }
 
 export function isPublicHoliday(date: Date): boolean {
