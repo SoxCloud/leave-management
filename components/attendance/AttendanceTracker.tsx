@@ -14,9 +14,18 @@ interface AttendanceRow {
   status: RowStatus;
   authorised: boolean;
   editable: boolean;
+  locked?: boolean;
 }
 
 const isSunday = (dateStr: string) => new Date(dateStr).getDay() === 0;
+
+const isOnLeave = (learnerName: string, leaveRequests: { learnerName: string; startDate: string; endDate: string; status: LeaveStatus }[], date: string) =>
+  leaveRequests.some(lr =>
+    lr.learnerName === learnerName &&
+    lr.status === LeaveStatus.APPROVED &&
+    lr.startDate <= date &&
+    date <= lr.endDate
+  );
 
 const AttendanceTracker: React.FC = () => {
   const { absenteeism, leaveRequests, learners, user, loading, filters, setFilters, refresh } = useApp();
@@ -38,22 +47,29 @@ const AttendanceTracker: React.FC = () => {
   const initRows = useCallback(() => {
     const map = new Map<string, AttendanceRow>();
     for (const learner of learners) {
-      const existing = todayRecords.find(r => r.learnerName === learner.fullName);
-      if (existing) {
-        const status: RowStatus =
-          existing.attendanceStatus === AttendanceStatus.PRESENT ? 'Present' :
-          existing.attendanceStatus === AttendanceStatus.LATE ? 'Late' :
-          existing.attendanceStatus === AttendanceStatus.AUTHORISED_ABSENCE ? 'Leave' :
-          'Absent';
-        map.set(learner.fullName, { status, authorised: existing.authorised });
-      } else if (todayIsSunday) {
-        map.set(learner.fullName, { status: 'Off', authorised: false });
+      const droppedOff = learner.status !== 'Active';
+      const onLeave = isOnLeave(learner.fullName, leaveRequests, today);
+
+      if (onLeave) {
+        map.set(learner.fullName, { status: 'Leave', authorised: true, editable: droppedOff, locked: true });
       } else {
-        map.set(learner.fullName, { status: 'Present', authorised: false });
+        const existing = todayRecords.find(r => r.learnerName === learner.fullName);
+        if (existing) {
+          const status: RowStatus =
+            existing.attendanceStatus === AttendanceStatus.PRESENT ? 'Present' :
+            existing.attendanceStatus === AttendanceStatus.LATE ? 'Late' :
+            existing.attendanceStatus === AttendanceStatus.AUTHORISED_ABSENCE ? 'Leave' :
+            'Absent';
+          map.set(learner.fullName, { status, authorised: existing.authorised, editable: !droppedOff });
+        } else if (todayIsSunday) {
+          map.set(learner.fullName, { status: 'Off', authorised: false, editable: !droppedOff });
+        } else {
+          map.set(learner.fullName, { status: 'Present', authorised: false, editable: !droppedOff });
+        }
       }
     }
     setRows(map);
-  }, [learners, todayRecords, todayIsSunday]);
+  }, [learners, todayRecords, todayIsSunday, leaveRequests, today]);
 
   useEffect(() => { initRows(); }, [initRows]);
 
@@ -70,6 +86,7 @@ const AttendanceTracker: React.FC = () => {
     for (const [learnerName, row] of rows) {
       if (row.status === 'Off') continue;
       const learner = learners.find(l => l.fullName === learnerName);
+      if (!learner || learner.status !== 'Active') continue;
       const attendanceStatus =
         row.status === 'Late' ? AttendanceStatus.LATE :
         row.status === 'Absent' ? AttendanceStatus.ABSENT :
@@ -183,8 +200,9 @@ const AttendanceTracker: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {filteredLearners.map(learner => {
-                const row = rows.get(learner.fullName) || { status: todayIsSunday ? 'Off' as const : 'Present' as const, authorised: false };
+                const row = rows.get(learner.fullName) || { status: todayIsSunday ? 'Off' as const : 'Present' as const, authorised: false, editable: true };
                 const existing = todayRecords.find(r => r.learnerName === learner.fullName);
+                const locked = !row.editable || row.locked === true;
                 return (
                   <tr key={learner.fullName} className={clsx('hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors', learner.status !== 'Active' && 'opacity-50')}>
                     <td className="px-4 py-2">
@@ -202,15 +220,20 @@ const AttendanceTracker: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <select
                           value={row.status}
+                          disabled={locked}
                           onChange={e => {
                             const status = e.target.value as RowStatus;
                             const current = rows.get(learner.fullName);
                             setRow(learner.fullName, {
                               status,
                               authorised: status === 'Late' || status === 'Absent' || status === 'Leave' ? (current?.authorised ?? false) : false,
+                              editable: locked,
                             });
                           }}
-                          className="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:border-indigo-500"
+                          className={clsx(
+                            'px-3 py-1.5 bg-white dark:bg-gray-800 rounded-lg text-sm text-gray-700 dark:text-gray-300 focus:outline-none focus:border-indigo-500',
+                            locked ? 'border border-gray-200 dark:border-gray-700 cursor-not-allowed opacity-60' : 'border border-gray-200 dark:border-gray-700'
+                          )}
                         >
                           <option value="Present">Present</option>
                           <option value="Late">Late</option>
@@ -218,7 +241,9 @@ const AttendanceTracker: React.FC = () => {
                           <option value="Leave">Leave</option>
                           <option value="Off">Off</option>
                         </select>
-                        {existing && (
+                        {row.locked && <Lock size={14} className="text-indigo-500" aria-label="On leave" />}
+                        {!row.locked && learner.status !== 'Active' && <Lock size={14} className="text-gray-400" aria-label="Dropped off" />}
+                        {existing && !row.locked && (
                           <span className="text-gray-400 italic text-xs">(overwrite)</span>
                         )}
                       </div>
@@ -226,12 +251,13 @@ const AttendanceTracker: React.FC = () => {
                     <td className="px-4 py-2">
                       {row.status === 'Late' || row.status === 'Absent' || row.status === 'Leave' ? (
                         <button
-                          onClick={() => setRow(learner.fullName, { ...row, authorised: !row.authorised })}
+                          disabled={locked}
+                          onClick={() => setRow(learner.fullName, { ...row, authorised: !row.authorised, editable: locked })}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
                             row.authorised
                               ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800'
                               : 'bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-300 border-red-200 dark:border-red-800'
-                          }`}
+                          } ${locked ? 'opacity-60 cursor-not-allowed' : ''}`}
                         >
                           {row.authorised ? <CheckCircle size={14} /> : <XCircle size={14} />}
                           {row.authorised ? 'Authorised' : 'Unauthorised'}
