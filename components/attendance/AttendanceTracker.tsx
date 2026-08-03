@@ -1,24 +1,25 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
-import { Search, Save, CheckCircle, XCircle } from 'lucide-react';
+import { Search, Save, CheckCircle, XCircle, Lock } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { useToast } from '../../context/ToastContext';
 import { AbsenteeismService } from '../../services/googleSheets';
 import EmptyState from '../common/EmptyState';
 import LoadingSkeleton from '../common/LoadingSkeleton';
 import { clsx, formatDate } from '../../services/utils';
-import { AttendanceStatus, AbsenteeismRecord } from '../../types';
+import { AttendanceStatus, AbsenteeismRecord, LeaveStatus } from '../../types';
 
 type RowStatus = 'Present' | 'Late' | 'Absent' | 'Leave' | 'Off';
 
 interface AttendanceRow {
   status: RowStatus;
   authorised: boolean;
+  editable: boolean;
 }
 
 const isSunday = (dateStr: string) => new Date(dateStr).getDay() === 0;
 
 const AttendanceTracker: React.FC = () => {
-  const { absenteeism, learners, user, loading, filters, setFilters, refresh } = useApp();
+  const { absenteeism, leaveRequests, learners, user, loading, filters, setFilters, refresh } = useApp();
   const { showToast } = useToast();
   const [rows, setRows] = useState<Map<string, AttendanceRow>>(new Map());
   const [saving, setSaving] = useState(false);
