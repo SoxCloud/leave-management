@@ -227,7 +227,8 @@ const AttendanceTracker: React.FC = () => {
                             setRow(learner.fullName, {
                               status,
                               authorised: status === 'Late' || status === 'Absent' || status === 'Leave' ? (current?.authorised ?? false) : false,
-                              editable: locked,
+                              editable: current?.editable ?? !locked,
+                              locked: current?.locked,
                             });
                           }}
                           className={clsx(
@@ -252,7 +253,7 @@ const AttendanceTracker: React.FC = () => {
                       {row.status === 'Late' || row.status === 'Absent' || row.status === 'Leave' ? (
                         <button
                           disabled={locked}
-                          onClick={() => setRow(learner.fullName, { ...row, authorised: !row.authorised, editable: locked })}
+                          onClick={() => setRow(learner.fullName, { ...row, authorised: !row.authorised })}
                           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
                             row.authorised
                               ? 'bg-green-50 dark:bg-green-900/30 text-green-700 dark:text-green-300 border-green-200 dark:border-green-800'
