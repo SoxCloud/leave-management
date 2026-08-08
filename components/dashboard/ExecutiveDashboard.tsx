@@ -117,6 +117,18 @@ const ExecutiveDashboard: React.FC = () => {
             <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Present, late, absent and on-leave counts for a selected date range</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => {
+                const now = new Date();
+                const pad = (n: number) => String(n).padStart(2, '0');
+                setRangeStart(`${now.getFullYear()}-${pad(now.getMonth() + 1)}-01`);
+                setRangeEnd(`${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`);
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 rounded-md text-xs font-medium hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
+            >
+              <CalendarDays size={14} />
+              This Month
+            </button>
             <div className="flex items-center gap-1 text-xs text-gray-500 dark:text-gray-400">
               <Filter size={14} />
               <span>From</span>
