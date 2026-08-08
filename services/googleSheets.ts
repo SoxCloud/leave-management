@@ -360,7 +360,7 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
     lateArrivals: absenteeism.filter(a => a.attendanceStatus === AttendanceStatus.LATE).length,
     averageLeaveBalance: learners.length > 0 ? Math.round((totalBalance / learners.length) * 10) / 10 : 0,
     todayAttendance: {
-      present: Math.max(0, activeLearners.length - onLeaveSet.size - absentToday - lateToday),
+      present: Math.max(0, activeLearners.length - onLeaveSet.size - absentToday),
       absent: absentToday,
       late: lateToday,
       total: activeLearners.length,

@@ -56,7 +56,7 @@ const AttendanceTracker: React.FC = () => {
     a.attendanceStatus === AttendanceStatus.ABSENT ||
     a.attendanceStatus === AttendanceStatus.NO_CALL_NO_SHOW
   ).length;
-  const presentToday = Math.max(0, activeCount - onLeaveCount - lateToday - absentToday);
+  const presentToday = Math.max(0, activeCount - onLeaveCount - absentToday);
 
   const initRows = useCallback(() => {
     const map = new Map<string, AttendanceRow>();
