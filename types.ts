@@ -208,3 +208,25 @@ export interface Notification {
   message: string;
   duration?: number;
 }
+
+export interface DailyAttendance {
+  date: string;
+  present: number;
+  late: number;
+  absent: number;
+  leave: number;
+  total: number;
+}
+
+export interface AttendanceRangeStats {
+  startDate: string;
+  endDate: string;
+  days: number;
+  presentDays: number;
+  lateDays: number;
+  absentDays: number;
+  leaveDays: number;
+  totalDays: number;
+  averageAttendance: number;
+  daily: DailyAttendance[];
+}

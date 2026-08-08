@@ -1,7 +1,8 @@
 import {
   Learner, LeaveRequest, LeaveBalance, AbsenteeismRecord,
   AppUser, AuditLog, DashboardStats, ChartData, DepartmentData,
-  LeaveStatus, LeaveType, AttendanceStatus, UserRole, CompanySettings
+  LeaveStatus, LeaveType, AttendanceStatus, UserRole, CompanySettings,
+  AttendanceRangeStats
 } from '../types';
 import { calculateAccruedDays, calculateLeaveBalance } from './leaveCalculations';
 
@@ -365,6 +366,71 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
       late: lateToday,
       total: activeLearners.length,
     },
+  };
+}
+
+export async function fetchAttendanceRangeStats(startDate: string, endDate: string): Promise<AttendanceRangeStats | null> {
+  const [learners, leaveRequests, absenteeism] = await Promise.all([
+    LearnersService.getAll(), LeaveRequestsService.getAll(), AbsenteeismService.getAll(),
+  ]);
+
+  const active = learners.filter(l => l.status === 'Active');
+  const activeCount = active.length;
+  const daily: AttendanceRangeStats['daily'] = [];
+
+  const cursor = new Date(startDate + 'T00:00:00');
+  const end = new Date(endDate + 'T00:00:00');
+  while (cursor <= end) {
+    const date = cursor.toISOString().split('T')[0];
+    const byLearner = new Map<string, AbsenteeismRecord>();
+    for (const a of absenteeism) {
+      if (a.date !== date) continue;
+      byLearner.set(a.learnerName, a);
+    }
+    const records = [...byLearner.values()];
+    if (records.length === 0) {
+      cursor.setDate(cursor.getDate() + 1);
+      continue;
+    }
+
+    const onLeave = new Set(
+      leaveRequests
+        .filter(lr => lr.status === LeaveStatus.APPROVED && lr.startDate <= date && date <= lr.endDate)
+        .map(lr => lr.learnerName)
+    );
+    const onLeaveActive = active.filter(l => onLeave.has(l.fullName)).length;
+    const absent = records.filter(a =>
+      (a.attendanceStatus === AttendanceStatus.ABSENT || a.attendanceStatus === AttendanceStatus.NO_CALL_NO_SHOW) &&
+      !onLeave.has(a.learnerName)
+    ).length;
+    const late = records.filter(a =>
+      a.attendanceStatus === AttendanceStatus.LATE && !onLeave.has(a.learnerName)
+    ).length;
+    const present = Math.max(0, activeCount - onLeaveActive - absent);
+
+    daily.push({ date, present, late, absent, leave: onLeaveActive, total: activeCount });
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  if (daily.length === 0) return null;
+
+  const presentDays = daily.reduce((s, d) => s + d.present, 0);
+  const lateDays = daily.reduce((s, d) => s + d.late, 0);
+  const absentDays = daily.reduce((s, d) => s + d.absent, 0);
+  const leaveDays = daily.reduce((s, d) => s + d.leave, 0);
+  const totalDays = daily.reduce((s, d) => s + d.total, 0);
+
+  return {
+    startDate,
+    endDate,
+    days: daily.length,
+    presentDays,
+    lateDays,
+    absentDays,
+    leaveDays,
+    totalDays,
+    averageAttendance: totalDays > 0 ? Math.round((presentDays / totalDays) * 100) : 0,
+    daily,
   };
 }
 
