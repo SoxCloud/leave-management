@@ -36,13 +36,27 @@ const AttendanceTracker: React.FC = () => {
   const today = new Date().toISOString().split('T')[0];
   const todayIsSunday = isSunday(today);
 
-  const todayRecords = useMemo(() => absenteeism.filter(a => a.date === today), [absenteeism, today]);
-  const presentToday = todayRecords.filter(a => a.attendanceStatus === AttendanceStatus.PRESENT).length;
+  const todayRecords = useMemo(() => {
+    const activeNames = new Set(learners.filter(l => l.status === 'Active').map(l => l.fullName));
+    const byLearner = new Map<string, AbsenteeismRecord>();
+    for (const a of absenteeism) {
+      if (a.date !== today || !activeNames.has(a.learnerName)) continue;
+      byLearner.set(a.learnerName, a);
+    }
+    return [...byLearner.values()];
+  }, [absenteeism, learners, today]);
+
+  const activeCount = useMemo(() => learners.filter(l => l.status === 'Active').length, [learners]);
+  const onLeaveCount = useMemo(() =>
+    learners.filter(l => l.status === 'Active' && isOnLeave(l.fullName, leaveRequests, today)).length,
+    [learners, leaveRequests, today]
+  );
   const lateToday = todayRecords.filter(a => a.attendanceStatus === AttendanceStatus.LATE).length;
   const absentToday = todayRecords.filter(a =>
     a.attendanceStatus === AttendanceStatus.ABSENT ||
     a.attendanceStatus === AttendanceStatus.NO_CALL_NO_SHOW
   ).length;
+  const presentToday = Math.max(0, activeCount - onLeaveCount - lateToday - absentToday);
 
   const initRows = useCallback(() => {
     const map = new Map<string, AttendanceRow>();
@@ -138,10 +152,14 @@ const AttendanceTracker: React.FC = () => {
   return (
     <div className="space-y-6">
       {/* Today's Summary */}
-      <div className="grid grid-cols-4 gap-4">
+      <div className="grid grid-cols-5 gap-4">
         <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#0B0B0B] p-4 shadow-sm">
           <p className="text-xs text-gray-500 dark:text-[#9CA3AF] mb-1">Present Today</p>
           <p className="text-2xl font-bold text-gray-900 dark:text-white">{presentToday}</p>
+        </div>
+        <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#0B0B0B] p-4 shadow-sm">
+          <p className="text-xs text-gray-500 dark:text-[#9CA3AF] mb-1">On Leave Today</p>
+          <p className="text-2xl font-bold text-[#8B5CF6]">{onLeaveCount}</p>
         </div>
         <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#0B0B0B] p-4 shadow-sm">
           <p className="text-xs text-gray-500 dark:text-[#9CA3AF] mb-1">Late Today</p>
@@ -152,8 +170,8 @@ const AttendanceTracker: React.FC = () => {
           <p className="text-2xl font-bold text-[#EF4444]">{absentToday}</p>
         </div>
         <div className="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-[#0B0B0B] p-4 shadow-sm">
-          <p className="text-xs text-gray-500 dark:text-[#9CA3AF] mb-1">Total Learners</p>
-          <p className="text-2xl font-bold text-gray-900 dark:text-white">{learners.length}</p>
+          <p className="text-xs text-gray-500 dark:text-[#9CA3AF] mb-1">Total Active</p>
+          <p className="text-2xl font-bold text-gray-900 dark:text-white">{activeCount}</p>
         </div>
       </div>
 

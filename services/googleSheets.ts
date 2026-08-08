@@ -316,15 +316,27 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
     .reduce((sum, lr) => sum + lr.daysRequested, 0);
   const totalAbsences = absenteeism.filter(a => a.attendanceStatus !== AttendanceStatus.PRESENT).length;
   const unauthorised = absenteeism.filter(a => !a.authorised && a.attendanceStatus !== AttendanceStatus.PRESENT).length;
+  const activeLearners = learners.filter(l => l.status === 'Active');
+  const activeNames = new Set(activeLearners.map(l => l.fullName));
+  const onLeaveSet = new Set(
+    leaveRequests
+      .filter(lr => lr.status === LeaveStatus.APPROVED && activeNames.has(lr.learnerName) && lr.startDate <= today && today <= lr.endDate)
+      .map(lr => lr.learnerName)
+  );
+
   const todayAttendance = (() => {
-    const registeredNames = new Set(learners.map(l => l.fullName));
     const byLearner = new Map<string, AbsenteeismRecord>();
     for (const a of absenteeism) {
-      if (a.date !== today || !registeredNames.has(a.learnerName)) continue;
+      if (a.date !== today || !activeNames.has(a.learnerName)) continue;
       byLearner.set(a.learnerName, a);
     }
-    return [...byLearner.values()];
+    return [...byLearner.values()].filter(a => !onLeaveSet.has(a.learnerName));
   })();
+
+  const absentToday = todayAttendance.filter(a =>
+    a.attendanceStatus === AttendanceStatus.ABSENT || a.attendanceStatus === AttendanceStatus.NO_CALL_NO_SHOW
+  ).length;
+  const lateToday = todayAttendance.filter(a => a.attendanceStatus === AttendanceStatus.LATE).length;
 
   const balances = learners.map(learner => {
     const learnerLeaves = leaveRequests.filter(lr => lr.learnerName === learner.fullName);
@@ -348,10 +360,10 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
     lateArrivals: absenteeism.filter(a => a.attendanceStatus === AttendanceStatus.LATE).length,
     averageLeaveBalance: learners.length > 0 ? Math.round((totalBalance / learners.length) * 10) / 10 : 0,
     todayAttendance: {
-      present: todayAttendance.filter(a => a.attendanceStatus === AttendanceStatus.PRESENT).length,
-      absent: todayAttendance.filter(a => a.attendanceStatus === AttendanceStatus.ABSENT || a.attendanceStatus === AttendanceStatus.NO_CALL_NO_SHOW).length,
-      late: todayAttendance.filter(a => a.attendanceStatus === AttendanceStatus.LATE).length,
-      total: todayAttendance.length,
+      present: Math.max(0, activeLearners.length - onLeaveSet.size - absentToday - lateToday),
+      absent: absentToday,
+      late: lateToday,
+      total: activeLearners.length,
     },
   };
 }
