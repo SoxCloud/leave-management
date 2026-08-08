@@ -316,7 +316,15 @@ export async function fetchDashboardStats(): Promise<DashboardStats> {
     .reduce((sum, lr) => sum + lr.daysRequested, 0);
   const totalAbsences = absenteeism.filter(a => a.attendanceStatus !== AttendanceStatus.PRESENT).length;
   const unauthorised = absenteeism.filter(a => !a.authorised && a.attendanceStatus !== AttendanceStatus.PRESENT).length;
-  const todayAttendance = absenteeism.filter(a => a.date === today);
+  const todayAttendance = (() => {
+    const registeredNames = new Set(learners.map(l => l.fullName));
+    const byLearner = new Map<string, AbsenteeismRecord>();
+    for (const a of absenteeism) {
+      if (a.date !== today || !registeredNames.has(a.learnerName)) continue;
+      byLearner.set(a.learnerName, a);
+    }
+    return [...byLearner.values()];
+  })();
 
   const balances = learners.map(learner => {
     const learnerLeaves = leaveRequests.filter(lr => lr.learnerName === learner.fullName);
