@@ -378,10 +378,12 @@ export async function fetchAttendanceRangeStats(startDate: string, endDate: stri
   const activeCount = active.length;
   const daily: AttendanceRangeStats['daily'] = [];
 
-  const cursor = new Date(startDate + 'T00:00:00');
-  const end = new Date(endDate + 'T00:00:00');
-  while (cursor <= end) {
-    const date = cursor.toISOString().split('T')[0];
+  const [sy, sm, sd] = startDate.split('-').map(Number);
+  const [ey, em, ed] = endDate.split('-').map(Number);
+  let y = sy, m = sm, d = sd;
+  const pad = (n: number) => String(n).padStart(2, '0');
+  while (y < ey || (y === ey && m < em) || (y === ey && m === em && d <= ed)) {
+    const date = `${y}-${pad(m)}-${pad(d)}`;
     const byLearner = new Map<string, AbsenteeismRecord>();
     for (const a of absenteeism) {
       if (a.date !== date) continue;
@@ -389,7 +391,8 @@ export async function fetchAttendanceRangeStats(startDate: string, endDate: stri
     }
     const records = [...byLearner.values()];
     if (records.length === 0) {
-      cursor.setDate(cursor.getDate() + 1);
+      d++;
+      if (d > new Date(y, m, 0).getDate()) { d = 1; m++; if (m > 12) { m = 1; y++; } }
       continue;
     }
 
@@ -409,7 +412,8 @@ export async function fetchAttendanceRangeStats(startDate: string, endDate: stri
     const present = Math.max(0, activeCount - onLeaveActive - absent);
 
     daily.push({ date, present, late, absent, leave: onLeaveActive, total: activeCount });
-    cursor.setDate(cursor.getDate() + 1);
+    d++;
+    if (d > new Date(y, m, 0).getDate()) { d = 1; m++; if (m > 12) { m = 1; y++; } }
   }
 
   if (daily.length === 0) return null;
